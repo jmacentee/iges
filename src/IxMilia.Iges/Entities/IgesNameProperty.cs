@@ -4,7 +4,7 @@ namespace IxMilia.Iges.Entities
 {
     public class IgesNameProperty : IgesProperty
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         internal IgesNameProperty()
             : base()
@@ -25,7 +25,7 @@ namespace IxMilia.Iges.Entities
             return nextIndex + PropertyCount;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             PropertyCount = 1;
             base.WriteParameters(parameters, binder);

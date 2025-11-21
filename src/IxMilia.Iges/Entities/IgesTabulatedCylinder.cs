@@ -6,7 +6,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.TabulatedCylinder; } }
 
-        public IgesEntity Directrix { get; set; }
+        public IgesEntity? Directrix { get; set; }
         public IgesPoint GeneratrixTerminatePoint { get; set; }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -19,12 +19,12 @@ namespace IxMilia.Iges.Entities
             return 4;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Directrix;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Directrix));
             parameters.Add(GeneratrixTerminatePoint.X);

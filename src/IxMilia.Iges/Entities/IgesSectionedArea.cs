@@ -9,9 +9,9 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.SectionedArea; } }
 
-        private IgesEntity _exteriorDefinitionCurve;
+        private IgesEntity? _exteriorDefinitionCurve;
 
-        public IgesEntity ExteriorDefinitionCurve
+        public IgesEntity? ExteriorDefinitionCurve
         {
             get => _exteriorDefinitionCurve;
             set
@@ -67,12 +67,12 @@ namespace IxMilia.Iges.Entities
             var islandCurveCount = Integer(parameters, index++);
             for (int i = 0; i < islandCurveCount; i++)
             {
-                binder.BindEntity(Integer(parameters, index++), e => InteriorDefinitionCurves.Add(e));
+                binder.BindEntity(Integer(parameters, index++), e => InteriorDefinitionCurves.Add(e ?? throw new ArgumentNullException()));
             }
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return ExteriorDefinitionCurve;
             foreach (var island in InteriorDefinitionCurves)
@@ -81,7 +81,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(ExteriorDefinitionCurve));
             parameters.Add(FillPattern);
@@ -94,7 +94,7 @@ namespace IxMilia.Iges.Entities
             parameters.AddRange(InteriorDefinitionCurves.Select(binder.GetEntityId).Cast<object>());
         }
 
-        private static bool IsValidExteriorDefinitionCurve(IgesEntity candidateDefinitionCurve)
+        private static bool IsValidExteriorDefinitionCurve(IgesEntity? candidateDefinitionCurve)
         {
             switch (candidateDefinitionCurve)
             {

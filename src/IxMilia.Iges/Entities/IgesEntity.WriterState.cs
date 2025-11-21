@@ -35,7 +35,7 @@ namespace IxMilia.Iges.Entities
                 _levelsPointers = new Dictionary<HashSet<int>, int>(new HashSetComparer());
             }
 
-            public int GetOrWriteEntityIndex(IgesEntity entity)
+            public int GetOrWriteEntityIndex(IgesEntity? entity)
             {
                 if (entity == null)
                 {
@@ -53,7 +53,7 @@ namespace IxMilia.Iges.Entities
                 }
             }
 
-            public void ReportReferencedEntities(IEnumerable<IgesEntity> entities)
+            public void ReportReferencedEntities(IEnumerable<IgesEntity?> entities)
             {
                 foreach (var entity in entities)
                 {
@@ -83,7 +83,7 @@ namespace IxMilia.Iges.Entities
 
             private class HashSetComparer : IEqualityComparer<HashSet<int>>
             {
-                public bool Equals(HashSet<int> x, HashSet<int> y)
+                public bool Equals(HashSet<int>? x, HashSet<int>? y)
                 {
                     if (x == null || y == null)
                     {

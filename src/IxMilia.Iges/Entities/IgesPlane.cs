@@ -22,7 +22,7 @@ namespace IxMilia.Iges.Entities
         public IgesPoint DisplaySymbolLocation { get; set; }
         public double DisplaySymbolSize { get; set; }
 
-        public IgesEntity ClosedCurveBoundingEntity { get; set; }
+        public IgesEntity? ClosedCurveBoundingEntity { get; set; }
 
         // custom properties
         public IgesPlaneBounding Bounding
@@ -68,12 +68,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return ClosedCurveBoundingEntity;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(PlaneCoefficientA);
             parameters.Add(PlaneCoefficientB);

@@ -33,7 +33,7 @@ namespace IxMilia.Iges.Entities
             return 12;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(XAxisLength);
             parameters.Add(YAxisLength);

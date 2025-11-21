@@ -6,7 +6,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.SolidOfRevolution; } }
 
-        public IgesEntity Curve { get; set; }
+        public IgesEntity? Curve { get; set; }
         public double RevolutionAmount { get; set; }
         public IgesPoint PointOnAxis { get; set; }
         public IgesVector AxisDirection { get; set; }
@@ -40,12 +40,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Curve;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Curve));
             parameters.Add(RevolutionAmount);

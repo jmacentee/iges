@@ -5,7 +5,7 @@ namespace IxMilia.Iges.Entities
     public class IgesCustomFiniteElement : IgesFiniteElement
     {
         public int CustomTopologyNumber { get; set; }
-        public List<IgesNode> Nodes { get; set; }
+        public List<IgesNode?> Nodes { get; set; }
         protected override int TopologyNumber { get { return CustomTopologyNumber; } }
         public override IgesElementEdgeOrder EdgeOrder { get { return IgesElementEdgeOrder.NotApplicable; } }
 
@@ -13,7 +13,7 @@ namespace IxMilia.Iges.Entities
             : base(IgesTopologyType.Custom)
         {
             CustomTopologyNumber = customTopologyNumber;
-            Nodes = new List<IgesNode>();
+            Nodes = new List<IgesNode?>();
         }
 
         protected override void AddNodes()

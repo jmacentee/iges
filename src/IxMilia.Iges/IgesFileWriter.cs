@@ -67,7 +67,7 @@ namespace IxMilia.Iges
 
         private static void PopulateGlobalLines(IgesFile file, List<string> globalLines)
         {
-            var fields = new object[26];
+            var fields = new object?[26];
             fields[0] = file.FieldDelimiter.ToString();
             fields[1] = file.RecordDelimiter.ToString();
             fields[2] = file.Identification;
@@ -98,7 +98,7 @@ namespace IxMilia.Iges
             AddParametersToStringList(fields, globalLines, file.FieldDelimiter, file.RecordDelimiter);
         }
 
-        internal static int AddParametersToStringList(object[] parameters, List<string> stringList, char fieldDelimiter, char recordDelimiter, int maxLength = IgesFile.MaxDataLength, string lineSuffix = null, string comment = null)
+        internal static int AddParametersToStringList(object?[] parameters, List<string> stringList, char fieldDelimiter, char recordDelimiter, int maxLength = IgesFile.MaxDataLength, string? lineSuffix = null, string? comment = null)
         {
             int suffixLength = lineSuffix == null ? 0 : lineSuffix.Length;
             var sb = new StringBuilder();
@@ -194,7 +194,7 @@ namespace IxMilia.Iges
             return addedLines;
         }
 
-        private static string ParameterToString(object parameter)
+        private static string ParameterToString(object? parameter)
         {
             if (parameter == null)
                 return string.Empty;

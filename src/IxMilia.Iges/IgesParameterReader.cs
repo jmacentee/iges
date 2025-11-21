@@ -35,12 +35,12 @@ namespace IxMilia.Iges
             return defaultValue;
         }
 
-        public static string String(List<string> values, int index)
+        public static string? String(List<string> values, int index)
         {
             return StringOrDefault(values, index, null);
         }
 
-        public static string StringOrDefault(List<string> values, int index, string defaultValue)
+        public static string? StringOrDefault(List<string> values, int index, string? defaultValue)
         {
             if (index < values.Count)
             {

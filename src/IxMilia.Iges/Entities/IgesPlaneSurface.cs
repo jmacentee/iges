@@ -6,9 +6,9 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.PlaneSurface; } }
 
-        public IgesLocation Point { get; set; }
-        public IgesDirection Normal { get; set; }
-        public IgesDirection ReferenceDirection { get; set; }
+        public IgesLocation? Point { get; set; }
+        public IgesDirection? Normal { get; set; }
+        public IgesDirection? ReferenceDirection { get; set; }
 
         public bool IsParameterized
         {
@@ -29,14 +29,14 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Point;
             yield return Normal;
             yield return ReferenceDirection;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Point));
             parameters.Add(binder.GetEntityId(Normal));

@@ -50,7 +50,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(this.P1.X);
             parameters.Add(this.P1.Y);

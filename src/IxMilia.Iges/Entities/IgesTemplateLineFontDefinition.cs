@@ -12,7 +12,7 @@ namespace IxMilia.Iges.Entities
     {
         public IgesTemplateLineFontOrientation Orientation { get; set; }
 
-        public IgesSubfigureDefinition Template { get; set; }
+        public IgesSubfigureDefinition? Template { get; set; }
 
         public double CommonArcLength { get; set; }
         public double ScaleFactor { get; set; }
@@ -40,12 +40,12 @@ namespace IxMilia.Iges.Entities
             return 4;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Template;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add((int)Orientation);
             parameters.Add(binder.GetEntityId(Template));

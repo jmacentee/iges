@@ -87,19 +87,19 @@ namespace IxMilia.Iges.Entities
         public override IgesEntityType EntityType { get { return IgesEntityType.ConnectPoint; } }
 
         public IgesPoint Location { get; set; }
-        public IgesEntity DisplaySymbolGeometry { get; set; }
+        public IgesEntity? DisplaySymbolGeometry { get; set; }
         public IgesConnectionType ConnectionType { get; set; }
         public int RawConnectionType { get; set; }
         public IgesConnectionFunctionType FunctionType { get; set; }
-        public string FunctionIdentifier { get; set; }
-        public IgesEntity FunctionIdentifierTextDisplayTemplate { get; set; }
-        public string FunctionName { get; set; }
-        public IgesEntity FunctionNameTextDisplayTemplate { get; set; }
+        public string? FunctionIdentifier { get; set; }
+        public IgesEntity? FunctionIdentifierTextDisplayTemplate { get; set; }
+        public string? FunctionName { get; set; }
+        public IgesEntity? FunctionNameTextDisplayTemplate { get; set; }
         public int UniqueIdentifier { get; set; }
         public IgesConnectionFunctionCode FunctionCode { get; set; }
         public int RawFunctionCode { get; set; }
         public bool ConnectPointMayBeSwapped { get; set; }
-        public IgesEntity Owner { get; set; }
+        public IgesEntity? Owner { get; set; }
 
         public IgesConnectPoint()
             : base()
@@ -132,7 +132,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return DisplaySymbolGeometry;
             yield return FunctionIdentifierTextDisplayTemplate;
@@ -140,7 +140,7 @@ namespace IxMilia.Iges.Entities
             yield return Owner;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(Location.X);
             parameters.Add(Location.Y);

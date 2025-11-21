@@ -13,22 +13,22 @@ namespace IxMilia.Iges.Entities
 
     public class IgesBoundaryItem
     {
-        public IgesEntity Entity { get; set; }
+        public IgesEntity? Entity { get; set; }
         public bool IsReversed { get; set; }
-        public List<IgesEntity> AssociatedParameterCurves { get; private set; }
+        public List<IgesEntity?> AssociatedParameterCurves { get; private set; }
 
         internal int AssociatedParameterCurvesCount = 0;
 
         internal IgesBoundaryItem()
         {
-            AssociatedParameterCurves = new List<IgesEntity>();
+            AssociatedParameterCurves = new List<IgesEntity?>();
         }
 
         public IgesBoundaryItem(IgesEntity entity, bool isReversed, IEnumerable<IgesEntity> associatedParameterCurves)
         {
             Entity = entity;
             IsReversed = isReversed;
-            AssociatedParameterCurves = new List<IgesEntity>(associatedParameterCurves);
+            AssociatedParameterCurves = new List<IgesEntity?>(associatedParameterCurves);
         }
     }
 
@@ -38,7 +38,7 @@ namespace IxMilia.Iges.Entities
 
         public bool IsBounaryParametric { get; set; }
         public IgesTrimCurvePreference TrimCurvePreference { get; set; }
-        public IgesEntity Entity { get; set; }
+        public IgesEntity? Entity { get; set; }
         public List<IgesBoundaryItem> BoundaryItems { get; private set; }
 
         private int _curveCount = 0;
@@ -76,7 +76,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Entity;
             foreach (var boundaryItem in BoundaryItems)
@@ -89,7 +89,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(IsBounaryParametric);
             parameters.Add((int)TrimCurvePreference);

@@ -34,7 +34,7 @@ namespace IxMilia.Iges.Entities
             FormNumber = HasTwoLeaders ? 1 : 0;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(GeneralNote));
             parameters.Add(binder.GetEntityId(FirstLeader));

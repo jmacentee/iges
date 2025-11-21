@@ -36,14 +36,14 @@ namespace IxMilia.Iges.Entities
             throw new NotImplementedException();
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             throw new NotImplementedException();
         }
 
-        internal override IgesEntity PostProcess()
+        internal override IgesEntity? PostProcess()
         {
-            IgesFiniteElement result;
+            IgesFiniteElement? result;
             switch (TopologyType)
             {
                 case IgesTopologyType.Beam:

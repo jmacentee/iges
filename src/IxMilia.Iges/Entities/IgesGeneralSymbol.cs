@@ -16,9 +16,9 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.GeneralSymbol; } }
 
-        public IgesGeneralNote Note { get; set; }
-        public IList<IgesLeader> Leaders { get; }
-        public IList<IgesEntity> Geometries { get; }
+        public IgesGeneralNote? Note { get; set; }
+        public IList<IgesLeader?> Leaders { get; }
+        public IList<IgesEntity?> Geometries { get; }
 
         public IgesGeneralSymbolType SymbolType
         {
@@ -29,8 +29,8 @@ namespace IxMilia.Iges.Entities
         internal IgesGeneralSymbol()
         {
             EntityUseFlag = IgesEntityUseFlag.Annotation;
-            Leaders = new ListNonNull<IgesLeader>();
-            Geometries = new ListNonNullWithMinimum<IgesEntity>(1);
+            Leaders = new ListNonNull<IgesLeader?>();
+            Geometries = new ListNonNullWithMinimum<IgesEntity?>(1);
         }
 
         public IgesGeneralSymbol(IgesGeneralNote note, IEnumerable<IgesLeader> leaders, IEnumerable<IgesEntity> geometries)
@@ -72,7 +72,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Note;
             foreach (var leader in Leaders)
@@ -86,7 +86,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Note));
             parameters.Add(Geometries.Count);

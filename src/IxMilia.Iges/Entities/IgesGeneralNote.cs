@@ -9,7 +9,7 @@ namespace IxMilia.Iges.Entities
         public double BoxWidth { get; set; }
         public double BoxHeight { get; set; }
         public int FontCode { get; set; }
-        public IgesTextFontDefinition TextFontDefinition { get; set; }
+        public IgesTextFontDefinition? TextFontDefinition { get; set; }
 
         /// <summary>
         /// The slant angle in radians.  <see cref="Math.PI"/> / 2.0 is the value for no slant and is the default.
@@ -24,7 +24,7 @@ namespace IxMilia.Iges.Entities
         public IgesTextMirroringAxis MirroringAxis { get; set; }
         public IgesTextRotationType RotationType { get; set; }
         public IgesPoint Location { get; set; }
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         public IgesTextString()
         {
@@ -64,7 +64,7 @@ namespace IxMilia.Iges.Entities
             Value = IgesParameterReader.String(parameters, index++);
         }
 
-        internal virtual void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal virtual void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(Value?.Length ?? 0);
             parameters.Add(BoxWidth);
@@ -138,12 +138,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             return Strings.Select(s => s?.TextFontDefinition);
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(Strings.Count);
             for (int i = 0; i < Strings.Count; i++)

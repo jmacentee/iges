@@ -6,12 +6,13 @@ namespace IxMilia.Iges.Entities
     public class IgesNodalAnalysis
     {
         public int Identifier { get; set; }
-        public IgesGeneralNote GeneralNote { get; set; }
-        public IgesFiniteElement FiniteElement { get; set; }
+        public IgesGeneralNote? GeneralNote { get; set; }
+        public IgesFiniteElement? FiniteElement { get; set; }
         public List<IgesNodalAnalysisCase> AnalysisCases { get; private set; }
 
         internal IgesNodalAnalysis()
         {
+            AnalysisCases = new List<IgesNodalAnalysisCase>();
         }
 
         public IgesNodalAnalysis(int id, IgesGeneralNote generalNote, IgesFiniteElement finiteElement, IEnumerable<IgesNodalAnalysisCase> analysisCases)
@@ -83,7 +84,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             foreach (var analysis in NodeAnalyses)
             {
@@ -92,7 +93,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(NodeAnalyses.Count);
             parameters.AddRange(NodeAnalyses.Select(na => binder.GetEntityId(na.GeneralNote)).Cast<object>());

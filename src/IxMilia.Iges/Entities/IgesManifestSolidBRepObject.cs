@@ -4,10 +4,10 @@ namespace IxMilia.Iges.Entities
 {
     public class IgesManifestSolidBRepVoid
     {
-        public IgesEntity Shell { get; set; }
+        public IgesEntity? Shell { get; set; }
         public bool IsOriented { get; set; }
 
-        public IgesManifestSolidBRepVoid(IgesEntity shell, bool isOriented)
+        public IgesManifestSolidBRepVoid(IgesEntity? shell, bool isOriented)
         {
             Shell = shell;
             IsOriented = isOriented;
@@ -18,7 +18,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.ManifestSolidBRepObject; } }
 
-        public IgesEntity Shell { get; set; }
+        public IgesEntity? Shell { get; set; }
         public bool IsOriented { get; set; }
         public List<IgesManifestSolidBRepVoid> Voids { get; } = new List<IgesManifestSolidBRepVoid>();
 
@@ -40,7 +40,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Shell;
             foreach (var v in Voids)
@@ -49,7 +49,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Shell));
             parameters.Add(IsOriented);

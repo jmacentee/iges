@@ -7,13 +7,13 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.GeneralLabel; } }
 
-        public IgesGeneralNote GeneralNote { get; set; }
-        public IList<IgesLeader> Leaders { get; private set; }
+        public IgesGeneralNote? GeneralNote { get; set; }
+        public IList<IgesLeader?> Leaders { get; private set; }
 
         public IgesGeneralLabel()
         {
             EntityUseFlag = IgesEntityUseFlag.Annotation;
-            Leaders = new List<IgesLeader>();
+            Leaders = new List<IgesLeader?>();
         }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -22,7 +22,7 @@ namespace IxMilia.Iges.Entities
             binder.BindEntity(Integer(parameters, index++), note => GeneralNote = note as IgesGeneralNote);
 
             var leaderCount = Integer(parameters, index++);
-            Leaders = new IgesLeader[leaderCount].ToList();
+            Leaders = new IgesLeader?[leaderCount].ToList();
             for (int i = 0; i < leaderCount; i++)
             {
                 var idx = i;
@@ -32,7 +32,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return GeneralNote;
             foreach (var leader in Leaders)
@@ -41,7 +41,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(GeneralNote));
             parameters.Add(Leaders.Count);

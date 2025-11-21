@@ -6,17 +6,17 @@ namespace IxMilia.Iges
 {
     internal class IgesReaderBinder
     {
-        private List<Tuple<int, Action<IgesEntity>>> _unboundEntities;
+        private List<Tuple<int, Action<IgesEntity?>>> _unboundEntities;
 
         public Dictionary<int, IgesEntity> EntityMap { get; }
 
         public IgesReaderBinder()
         {
             EntityMap = new Dictionary<int, IgesEntity>();
-            _unboundEntities = new List<Tuple<int, Action<IgesEntity>>>();
+            _unboundEntities = new List<Tuple<int, Action<IgesEntity?>>>();
         }
 
-        public void BindEntity(int entityIndex, Action<IgesEntity> bindAction)
+        public void BindEntity(int entityIndex, Action<IgesEntity?> bindAction)
         {
             if (EntityMap.ContainsKey(entityIndex))
             {

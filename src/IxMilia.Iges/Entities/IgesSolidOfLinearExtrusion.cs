@@ -6,7 +6,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.SolidOfLinearExtrusion; } }
 
-        public IgesEntity Curve { get; set; }
+        public IgesEntity? Curve { get; set; }
         public double ExtrusionLength { get; set; }
         public IgesVector ExtrusionDirection { get; set; } = IgesVector.ZAxis;
 
@@ -19,12 +19,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Curve;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Curve));
             parameters.Add(ExtrusionLength);

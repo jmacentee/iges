@@ -24,7 +24,7 @@ namespace IxMilia.Iges.Entities
     public class IgesElementResult
     {
         public int Identifier { get; set; }
-        public IgesEntity Entity { get; set; }
+        public IgesEntity? Entity { get; set; }
         public int ElementTopologyType { get; set; }
         public int LayerCount { get; set; }
         public IgesDataLayerType DataLayerType { get; set; }
@@ -43,7 +43,7 @@ namespace IxMilia.Iges.Entities
             set { FormNumber = (int)value; }
         }
 
-        public IgesGeneralNote GeneralNote { get; set; }
+        public IgesGeneralNote? GeneralNote { get; set; }
         public int AnalysisSubcase { get; set; }
         public DateTime AnalysisTime { get; set; }
         public IgesResultsReportingType ReportingType { get; set; }
@@ -87,7 +87,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return GeneralNote;
             foreach (var element in Elements)
@@ -96,7 +96,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(GeneralNote));
             parameters.Add(AnalysisSubcase);

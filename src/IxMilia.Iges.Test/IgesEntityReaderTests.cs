@@ -114,16 +114,16 @@ namespace IxMilia.Iges.Test
             Assert.Equal(IgesEntityType.CompositeCurve, entity.EntityType);
             var compositeCurve = (IgesCompositeCurve)entity;
             Assert.Equal(2, compositeCurve.Entities.Count);
-            Assert.Equal(IgesEntityType.Line, compositeCurve.Entities[0].EntityType);
-            Assert.Equal(IgesEntityType.CircularArc, compositeCurve.Entities[1].EntityType);
-            var line = (IgesLine)compositeCurve.Entities[0];
+            Assert.Equal(IgesEntityType.Line, compositeCurve.Entities[0]!.EntityType);
+            Assert.Equal(IgesEntityType.CircularArc, compositeCurve.Entities[1]!.EntityType);
+            var line = (IgesLine)compositeCurve.Entities[0]!;
             Assert.Equal(1.0, line.P1.X);
             Assert.Equal(2.0, line.P1.Y);
             Assert.Equal(3.0, line.P1.Z);
             Assert.Equal(4.0, line.P2.X);
             Assert.Equal(5.0, line.P2.Y);
             Assert.Equal(6.0, line.P2.Z);
-            var circle = (IgesCircularArc)compositeCurve.Entities[1];
+            var circle = (IgesCircularArc)compositeCurve.Entities[1]!;
             Assert.Equal(11.0, circle.PlaneDisplacement);
             Assert.Equal(22.0, circle.Center.X);
             Assert.Equal(33.0, circle.Center.Y);
@@ -287,6 +287,7 @@ namespace IxMilia.Iges.Test
             Assert.Equal(IgesColorNumber.Green, line.Color);
 
             // verify transformation matrix is identity
+            Assert.NotNull(line.TransformationMatrix);
             Assert.Equal(1.0, line.TransformationMatrix.R11);
             Assert.Equal(0.0, line.TransformationMatrix.R12);
             Assert.Equal(0.0, line.TransformationMatrix.R13);
@@ -496,8 +497,8 @@ namespace IxMilia.Iges.Test
 110,2.,0.,0.,0.,0.,0.;                                                 3P      2
 118,1,3,1,1;                                                           5P      3
 ");
-            Assert.Equal(1.0, ((IgesLine)ruledSurface.FirstCurve).P1.X);
-            Assert.Equal(2.0, ((IgesLine)ruledSurface.SecondCurve).P1.X);
+            Assert.Equal(1.0, ((IgesLine)ruledSurface.FirstCurve!).P1.X);
+            Assert.Equal(2.0, ((IgesLine)ruledSurface.SecondCurve!).P1.X);
             Assert.Equal(IgesRuledSurfaceDirection.FirstToLast_LastToFirst, ruledSurface.Direction);
             Assert.True(ruledSurface.IsDevelopable);
 
@@ -527,8 +528,8 @@ namespace IxMilia.Iges.Test
 110,2.,0.,0.,0.,0.,0.;                                                 3P      2
 120,1,3,3.,4.;                                                         5P      3
 ");
-            Assert.Equal(1.0, surface.AxisOfRevolution.P1.X);
-            Assert.Equal(2.0, ((IgesLine)surface.Generatrix).P1.X);
+            Assert.Equal(1.0, surface.AxisOfRevolution!.P1.X);
+            Assert.Equal(2.0, ((IgesLine)surface.Generatrix!).P1.X);
             Assert.Equal(3.0, surface.StartAngle);
             Assert.Equal(4.0, surface.EndAngle);
 
@@ -826,7 +827,7 @@ namespace IxMilia.Iges.Test
 ");
             Assert.Equal(5001, (int)custom.TopologyType);
             Assert.Equal(5002, custom.CustomTopologyNumber);
-            Assert.Equal(new IgesPoint(1, 2, 3), custom.Nodes.Single().Offset);
+            Assert.Equal(new IgesPoint(1, 2, 3), custom.Nodes.Single()!.Offset);
             Assert.Equal("custom", custom.ElementTypeName);
         }
 
@@ -1030,7 +1031,7 @@ namespace IxMilia.Iges.Test
 110,1.,2.,3.,0.,0.,0.;                                                 1P      1
 162,1,0.5,0.,0.,0.,1.,0.,0.;                                           3P      2
 ");
-            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), ((IgesLine)solid.Curve).P1);
+            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), ((IgesLine)solid.Curve!).P1);
             Assert.Equal(0.5, solid.RevolutionAmount);
             Assert.Equal(IgesVector.XAxis, solid.AxisDirection);
         }
@@ -1096,22 +1097,22 @@ namespace IxMilia.Iges.Test
 110,0.,0.,0.,0.,0.,0.;                                                 9P      5
 180,9,-1,-3,-5,1,3,-7,-9,2,1;                                         11P      6
 ");
-            var root = (IgesBooleanTreeOperation)tree.RootNode;
+            var root = (IgesBooleanTreeOperation)tree.RootNode!;
             Assert.Equal(IgesBooleanTreeOperationKind.Union, root.OperationKind);
 
-            var left = (IgesBooleanTreeOperation)root.LeftChild;
+            var left = (IgesBooleanTreeOperation)root.LeftChild!;
             Assert.Equal(IgesBooleanTreeOperationKind.Difference, left.OperationKind);
-            Assert.Equal("A", ((IgesBooleanTreeEntity)left.LeftChild).Entity.EntityLabel);
+            Assert.Equal("A", ((IgesBooleanTreeEntity)left.LeftChild!).Entity!.EntityLabel);
 
-            var leftRight = (IgesBooleanTreeOperation)left.RightChild;
+            var leftRight = (IgesBooleanTreeOperation)left.RightChild!;
             Assert.Equal(IgesBooleanTreeOperationKind.Union, leftRight.OperationKind);
-            Assert.Equal("B", ((IgesBooleanTreeEntity)leftRight.LeftChild).Entity.EntityLabel);
-            Assert.Equal("C", ((IgesBooleanTreeEntity)leftRight.RightChild).Entity.EntityLabel);
+            Assert.Equal("B", ((IgesBooleanTreeEntity)leftRight.LeftChild!).Entity!.EntityLabel);
+            Assert.Equal("C", ((IgesBooleanTreeEntity)leftRight.RightChild!).Entity!.EntityLabel);
 
-            var right = (IgesBooleanTreeOperation)root.RightChild;
+            var right = (IgesBooleanTreeOperation)root.RightChild!;
             Assert.Equal(IgesBooleanTreeOperationKind.Intersection, right.OperationKind);
-            Assert.Equal("D", ((IgesBooleanTreeEntity)right.LeftChild).Entity.EntityLabel);
-            Assert.Equal("E", ((IgesBooleanTreeEntity)right.RightChild).Entity.EntityLabel);
+            Assert.Equal("D", ((IgesBooleanTreeEntity)right.LeftChild!).Entity!.EntityLabel);
+            Assert.Equal("E", ((IgesBooleanTreeEntity)right.RightChild!).Entity!.EntityLabel);
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1149,8 +1150,8 @@ namespace IxMilia.Iges.Test
             Assert.Equal(2, solid.Solids.Count);
             Assert.IsType<IgesLine>(solid.Solids[0].Solid);
             Assert.IsType<IgesLine>(solid.Solids[1].Solid);
-            Assert.True(solid.Solids[0].TransformationMatrix.IsIdentity); // null pointer, defaulted to identity
-            Assert.True(solid.Solids[1].TransformationMatrix.IsIdentity); // actually an identity matrix
+            Assert.True(solid.Solids[0].TransformationMatrix!.IsIdentity); // null pointer, defaulted to identity
+            Assert.True(solid.Solids[1].TransformationMatrix!.IsIdentity); // actually an identity matrix
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1191,9 +1192,9 @@ namespace IxMilia.Iges.Test
 123,1.,0.,0.;                                                          5P      3
 190,1,3,5;                                                             7P      4
 ");
-            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), plane.Point.ToPoint());
-            Assert.Equal(IgesVector.ZAxis, plane.Normal.ToVector());
-            Assert.Equal(IgesVector.XAxis, plane.ReferenceDirection.ToVector());
+            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), plane.Point!.ToPoint());
+            Assert.Equal(IgesVector.ZAxis, plane.Normal!.ToVector());
+            Assert.Equal(IgesVector.XAxis, plane.ReferenceDirection!.ToVector());
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1213,10 +1214,10 @@ namespace IxMilia.Iges.Test
 123,1.,0.,0.;                                                          5P      3
 192,1,3,13.,5;                                                         7P      4
 ");
-            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), cylinder.Point.ToPoint());
-            Assert.Equal(IgesVector.ZAxis, cylinder.AxisDirection.ToVector());
+            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), cylinder.Point!.ToPoint());
+            Assert.Equal(IgesVector.ZAxis, cylinder.AxisDirection!.ToVector());
             Assert.Equal(13.0, cylinder.Radius);
-            Assert.Equal(IgesVector.XAxis, cylinder.ReferenceDirection.ToVector());
+            Assert.Equal(IgesVector.XAxis, cylinder.ReferenceDirection!.ToVector());
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1236,11 +1237,11 @@ namespace IxMilia.Iges.Test
 123,1.,0.,0.;                                                          5P      3
 194,1,3,13.,45.,5;                                                     7P      4
 ");
-            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), cone.Point.ToPoint());
-            Assert.Equal(IgesVector.ZAxis, cone.AxisDirection.ToVector());
+            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), cone.Point!.ToPoint());
+            Assert.Equal(IgesVector.ZAxis, cone.AxisDirection!.ToVector());
             Assert.Equal(13.0, cone.Radius);
             Assert.Equal(45.0, cone.SemiAngle);
-            Assert.Equal(IgesVector.XAxis, cone.ReferenceDirection.ToVector());
+            Assert.Equal(IgesVector.XAxis, cone.ReferenceDirection!.ToVector());
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1260,10 +1261,10 @@ namespace IxMilia.Iges.Test
 123,1.,0.,0.;                                                          5P      3
 196,1,13.,3,5;                                                         7P      4
 ");
-            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), sphere.Center.ToPoint());
+            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), sphere.Center!.ToPoint());
             Assert.Equal(13.0, sphere.Radius);
-            Assert.Equal(IgesVector.ZAxis, sphere.AxisDirection.ToVector());
-            Assert.Equal(IgesVector.XAxis, sphere.ReferenceDirection.ToVector());
+            Assert.Equal(IgesVector.ZAxis, sphere.AxisDirection!.ToVector());
+            Assert.Equal(IgesVector.XAxis, sphere.ReferenceDirection!.ToVector());
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1283,11 +1284,11 @@ namespace IxMilia.Iges.Test
 123,1.,0.,0.;                                                          5P      3
 198,1,3,12.,6.,5;                                                      7P      4
 ");
-            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), torus.Center.ToPoint());
-            Assert.Equal(IgesVector.ZAxis, torus.AxisDirection.ToVector());
+            Assert.Equal(new IgesPoint(1.0, 2.0, 3.0), torus.Center!.ToPoint());
+            Assert.Equal(IgesVector.ZAxis, torus.AxisDirection!.ToVector());
             Assert.Equal(12.0, torus.MajorRadius);
             Assert.Equal(6.0, torus.MinorRadius);
-            Assert.Equal(IgesVector.XAxis, torus.ReferenceDirection.ToVector());
+            Assert.Equal(IgesVector.XAxis, torus.ReferenceDirection!.ToVector());
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1494,7 +1495,7 @@ namespace IxMilia.Iges.Test
 228,1,1,3,0;                                                           5P      3
 ");
             Assert.NotNull(symbol.Note);
-            Assert.Equal(IgesEntityType.Line, symbol.Geometries.Single().EntityType);
+            Assert.Equal(IgesEntityType.Line, symbol.Geometries.Single()!.EntityType);
             Assert.Empty(symbol.Leaders);
         }
 
@@ -1619,7 +1620,7 @@ namespace IxMilia.Iges.Test
 ");
             Assert.Equal(IgesTemplateLineFontOrientation.AlignedToTangent, lfd.Orientation);
             var sub = lfd.Template;
-            Assert.Equal("foo", sub.Name);
+            Assert.Equal("foo", sub!.Name);
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.Reading)]
@@ -1667,16 +1668,16 @@ subfigureH,2,1,5;                                                       P      3
             Assert.Equal(0, subfigure.Depth);
             Assert.Equal("this,is;the subfigureH", subfigure.Name);
             Assert.Equal(2, subfigure.Entities.Count);
-            Assert.Equal(IgesEntityType.Line, subfigure.Entities[0].EntityType);
-            Assert.Equal(IgesEntityType.Line, subfigure.Entities[1].EntityType);
-            var line1 = (IgesLine)subfigure.Entities[0];
+            Assert.Equal(IgesEntityType.Line, subfigure.Entities[0]!.EntityType);
+            Assert.Equal(IgesEntityType.Line, subfigure.Entities[1]!.EntityType);
+            var line1 = (IgesLine)subfigure.Entities[0]!;
             Assert.Equal(1.0, line1.P1.X);
             Assert.Equal(2.0, line1.P1.Y);
             Assert.Equal(3.0, line1.P1.Z);
             Assert.Equal(4.0, line1.P2.X);
             Assert.Equal(5.0, line1.P2.Y);
             Assert.Equal(6.0, line1.P2.Z);
-            var line2 = (IgesLine)subfigure.Entities[1];
+            var line2 = (IgesLine)subfigure.Entities[1]!;
             Assert.Equal(7.0, line2.P1.X);
             Assert.Equal(8.0, line2.P1.Y);
             Assert.Equal(9.0, line2.P1.Z);
@@ -1793,6 +1794,7 @@ subfigureH,2,1,5;                                                       P      3
 110,11,22,33,44,55,66;                                                 3P      2
 ");
             Assert.Equal(IgesColorNumber.Custom, line.Color);
+            Assert.NotNull(line.CustomColor);
             Assert.Equal(77.0, line.CustomColor.RedIntensity);
             Assert.Equal(88.0, line.CustomColor.GreenIntensity);
             Assert.Equal(99.0, line.CustomColor.BlueIntensity);
@@ -1899,12 +1901,12 @@ subfigureH,2,1,5;                                                       P      3
 ");
             Assert.Equal(1, view.ViewNumber);
             Assert.Equal(2.0, view.ScaleFactor);
-            Assert.Equal(3.0, view.ViewVolumeLeft.PlaneCoefficientA);
-            Assert.Equal(4.0, view.ViewVolumeTop.PlaneCoefficientA);
-            Assert.Equal(5.0, view.ViewVolumeRight.PlaneCoefficientA);
-            Assert.Equal(6.0, view.ViewVolumeBottom.PlaneCoefficientA);
-            Assert.Equal(7.0, view.ViewVolumeBack.PlaneCoefficientA);
-            Assert.Equal(8.0, view.ViewVolumeFront.PlaneCoefficientA);
+            Assert.Equal(3.0, view.ViewVolumeLeft!.PlaneCoefficientA);
+            Assert.Equal(4.0, view.ViewVolumeTop!.PlaneCoefficientA);
+            Assert.Equal(5.0, view.ViewVolumeRight!.PlaneCoefficientA);
+            Assert.Equal(6.0, view.ViewVolumeBottom!.PlaneCoefficientA);
+            Assert.Equal(7.0, view.ViewVolumeBack!.PlaneCoefficientA);
+            Assert.Equal(8.0, view.ViewVolumeFront!.PlaneCoefficientA);
 
             // null pointers
             view = (IgesView)ParseLastEntity(@"

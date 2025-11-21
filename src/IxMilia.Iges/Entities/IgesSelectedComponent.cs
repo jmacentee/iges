@@ -6,7 +6,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.SelectedComponent; } }
 
-        public IgesBooleanTree BooleanTree { get; set; }
+        public IgesBooleanTree? BooleanTree { get; set; }
         public IgesPoint SelectionPoint { get; set; }
 
         public IgesSelectedComponent()
@@ -14,7 +14,7 @@ namespace IxMilia.Iges.Entities
         {
         }
 
-        public IgesSelectedComponent(IgesBooleanTree booleanTree, IgesPoint selectionPoint)
+        public IgesSelectedComponent(IgesBooleanTree? booleanTree, IgesPoint selectionPoint)
         {
             EntityUseFlag = IgesEntityUseFlag.Other;
             BooleanTree = booleanTree;
@@ -29,12 +29,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return BooleanTree;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(BooleanTree));
             parameters.Add(SelectionPoint.X);

@@ -24,7 +24,7 @@ namespace IxMilia.Iges.Entities
             return nextIndex + PropertyCount;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             PropertyCount = DefinedLevels.Count;
             base.WriteParameters(parameters, binder);

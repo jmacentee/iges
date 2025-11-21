@@ -15,7 +15,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.Flash; } }
 
-        private IgesEntity _referenceEntity;
+        private IgesEntity? _referenceEntity;
 
         public double XOffset { get; set; }
         public double YOffset { get; set; }
@@ -23,7 +23,7 @@ namespace IxMilia.Iges.Entities
         public double SizeParameter2 { get; set; }
         public double RotationAngle { get; set; }
 
-        public IgesEntity ReferenceEntity
+        public IgesEntity? ReferenceEntity
         {
             get { return _referenceEntity; }
             set
@@ -69,12 +69,12 @@ namespace IxMilia.Iges.Entities
             return 6;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return ReferenceEntity;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(XOffset);
             parameters.Add(YOffset);

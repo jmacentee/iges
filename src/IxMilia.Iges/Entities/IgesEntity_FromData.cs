@@ -4,9 +4,9 @@ namespace IxMilia.Iges.Entities
 {
     public abstract partial class IgesEntity
     {
-        internal static IgesEntity FromData(IgesDirectoryData directoryData, List<string> parameters, IgesReaderBinder binder)
+        internal static IgesEntity? FromData(IgesDirectoryData directoryData, List<string> parameters, IgesReaderBinder binder)
         {
-            IgesEntity entity = null;
+            IgesEntity? entity = null;
             switch (directoryData.EntityType)
             {
                 case IgesEntityType.AngularDimension:

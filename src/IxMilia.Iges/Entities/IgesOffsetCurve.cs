@@ -20,9 +20,9 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.OffsetCurve; } }
 
-        public IgesEntity CurveToOffset { get; set; }
+        public IgesEntity? CurveToOffset { get; set; }
         public IgesOffsetDistanceType DistanceType { get; set; }
-        public IgesEntity EntityOffsetCurveFunction { get; set; }
+        public IgesEntity? EntityOffsetCurveFunction { get; set; }
         public int ParameterIndexOfFunctionEntityCurve { get; set; }
         public IgesTaperedOffsetType TaperedOffsetType { get; set; }
         public double FirstOffsetDistance { get; set; }
@@ -56,13 +56,13 @@ namespace IxMilia.Iges.Entities
             return 14;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return CurveToOffset;
             yield return EntityOffsetCurveFunction;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(CurveToOffset));
             parameters.Add((int)DistanceType);

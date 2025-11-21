@@ -6,10 +6,10 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.SphericalSurface; } }
 
-        public IgesLocation Center { get; set; }
+        public IgesLocation? Center { get; set; }
         public double Radius { get; set; }
-        public IgesDirection AxisDirection { get; set; }
-        public IgesDirection ReferenceDirection { get; set; }
+        public IgesDirection? AxisDirection { get; set; }
+        public IgesDirection? ReferenceDirection { get; set; }
 
         public bool IsParameterized
         {
@@ -36,14 +36,14 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Center;
             yield return AxisDirection;
             yield return ReferenceDirection;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Center));
             parameters.Add(Radius);

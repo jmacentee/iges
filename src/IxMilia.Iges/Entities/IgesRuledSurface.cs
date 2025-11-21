@@ -12,8 +12,8 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.RuledSurface; } }
 
-        public IgesEntity FirstCurve { get; set; }
-        public IgesEntity SecondCurve { get; set; }
+        public IgesEntity? FirstCurve { get; set; }
+        public IgesEntity? SecondCurve { get; set; }
         public IgesRuledSurfaceDirection Direction { get; set; }
         public bool IsDevelopable { get; set; }
         public bool CurvesProvideParameterization
@@ -43,13 +43,13 @@ namespace IxMilia.Iges.Entities
             return 4;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return FirstCurve;
             yield return SecondCurve;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(FirstCurve));
             parameters.Add(binder.GetEntityId(SecondCurve));

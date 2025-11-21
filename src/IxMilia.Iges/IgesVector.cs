@@ -91,7 +91,7 @@ namespace IxMilia.Iges
             return this == other;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is IgesVector && this == (IgesVector)obj;
         }

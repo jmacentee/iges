@@ -23,9 +23,9 @@ namespace IxMilia.Iges.Entities
         public override IgesEntityType EntityType { get { return IgesEntityType.CurveOnAParametricSurface; } }
 
         public IgesCurveCreationType CurveCreationType { get; set; }
-        public IgesEntity Surface { get; set; }
-        public IgesEntity CurveDefinitionB { get; set; }
-        public IgesEntity CurveDefinitionC { get; set; }
+        public IgesEntity? Surface { get; set; }
+        public IgesEntity? CurveDefinitionB { get; set; }
+        public IgesEntity? CurveDefinitionC { get; set; }
         public IgesCurvePreferredRepresentation PreferredRepresentation { get; set; }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -38,14 +38,14 @@ namespace IxMilia.Iges.Entities
             return 5;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Surface;
             yield return CurveDefinitionB;
             yield return CurveDefinitionC;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add((int)CurveCreationType);
             parameters.Add(binder.GetEntityId(Surface));

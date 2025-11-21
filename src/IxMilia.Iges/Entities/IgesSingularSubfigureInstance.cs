@@ -6,7 +6,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.SingularSubfigureInstance; } }
 
-        public IgesSubfigureDefinition SubfigureDefinition { get; set; }
+        public IgesSubfigureDefinition? SubfigureDefinition { get; set; }
 
         public IgesVector Translation { get; set; }
 
@@ -16,7 +16,7 @@ namespace IxMilia.Iges.Entities
         {
         }
 
-        public IgesSingularSubfigureInstance(IgesSubfigureDefinition subfigureDefinition, IgesVector translation, double scale)
+        public IgesSingularSubfigureInstance(IgesSubfigureDefinition? subfigureDefinition, IgesVector translation, double scale)
         {
             SubfigureDefinition = subfigureDefinition;
             Translation = translation;
@@ -32,12 +32,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return SubfigureDefinition;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(SubfigureDefinition));
             parameters.Add(Translation.X);

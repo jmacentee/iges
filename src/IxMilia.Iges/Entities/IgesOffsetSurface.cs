@@ -8,14 +8,14 @@ namespace IxMilia.Iges.Entities
 
         public IgesVector Direction { get; set; }
         public double Distance { get; set; }
-        public IgesEntity Surface { get; set; }
+        public IgesEntity? Surface { get; set; }
 
         public IgesOffsetSurface()
             : this(IgesVector.ZAxis, 0.0, null)
         {
         }
 
-        public IgesOffsetSurface(IgesVector direction, double distance, IgesEntity surface)
+        public IgesOffsetSurface(IgesVector direction, double distance, IgesEntity? surface)
             : base()
         {
             Direction = direction;
@@ -32,12 +32,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Surface;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(Direction.X);
             parameters.Add(Direction.Y);

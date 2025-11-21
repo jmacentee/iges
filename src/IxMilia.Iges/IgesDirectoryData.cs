@@ -14,14 +14,14 @@ namespace IxMilia.Iges
         public int View { get; set; }
         public int TransformationMatrixPointer { get; set; }
         public int LableDisplay { get; set; }
-        public string StatusNumber { get; set; }
+        public string? StatusNumber { get; set; }
         public int SequenceNumber { get; set; }
 
         public int LineWeight { get; set; }
         public int Color { get; set; }
         public int LineCount { get; set; }
         public int FormNumber { get; set; }
-        public string EntityLabel { get; set; }
+        public string? EntityLabel { get; set; }
         public uint EntitySubscript { get; set; }
 
         private const string BlankField = "        ";
@@ -68,7 +68,7 @@ namespace IxMilia.Iges
                 : string.Format("{0,8}", value);
         }
 
-        private static string ToStringOrDefault(string value)
+        private static string ToStringOrDefault(string? value)
         {
             return string.IsNullOrWhiteSpace(value)
                 ? "        "
@@ -93,12 +93,17 @@ namespace IxMilia.Iges
             dir.Color = IgesParser.ParseIntStrict(GetField(line2, 3));
             dir.LineCount = IgesParser.ParseIntStrict(GetField(line2, 4));
             dir.FormNumber = IgesParser.ParseIntStrict(GetField(line2, 5));
-            dir.EntityLabel = GetField(line2, 8, null);
+            dir.EntityLabel = GetFieldOrDefault(line2, 8, null);
             dir.EntitySubscript = IgesParser.ParseUIntStrict(GetField(line2, 9));
             return dir;
         }
 
-        private static string GetField(string str, int field, string defaultValue = "0")
+        private static string GetField(string str, int filed)
+        {
+            return GetFieldOrDefault(str, filed, "0")!;
+        }
+
+        private static string? GetFieldOrDefault(string str, int field, string? defaultValue)
         {
             var size = 8;
             var offset = (field - 1) * size;

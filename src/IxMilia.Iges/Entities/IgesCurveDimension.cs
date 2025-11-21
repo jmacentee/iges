@@ -6,10 +6,10 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.CurveDimension; } }
 
-        public IgesEntity FirstCurve { get; set; }
-        public IgesEntity SecondCurve { get; set; }
-        public IgesCopiousData FirstWitnessLine { get; set; }
-        public IgesCopiousData SecondWitnessLine { get; set; }
+        public IgesEntity? FirstCurve { get; set; }
+        public IgesEntity? SecondCurve { get; set; }
+        public IgesCopiousData? FirstWitnessLine { get; set; }
+        public IgesCopiousData? SecondWitnessLine { get; set; }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
@@ -24,7 +24,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             foreach (var referenced in base.GetReferencedEntities())
             {
@@ -37,7 +37,7 @@ namespace IxMilia.Iges.Entities
             yield return SecondWitnessLine;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(GeneralNote));
             parameters.Add(binder.GetEntityId(FirstCurve));

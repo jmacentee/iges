@@ -40,7 +40,7 @@ namespace IxMilia.Iges.Entities
         public double InterLineSpacing { get; set; }
         public IgesFontStyle FontStyle { get; set; }
         public double CharacterAngle { get; set; }
-        public string ControlCode { get; set; }
+        public string? ControlCode { get; set; }
 
         public IgesNewTextString()
             : base()
@@ -63,7 +63,7 @@ namespace IxMilia.Iges.Entities
             return str;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add((int)CharacterDisplay);
             parameters.Add(CharacterWidth);
@@ -123,12 +123,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             return Strings.Select(s => s?.TextFontDefinition);
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(TextContainmentAreaWidth);
             parameters.Add(TextContainmentAreaHeight);

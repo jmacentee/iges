@@ -266,7 +266,7 @@ S      0G      0D      0P      0                                        T      1
 110,77,88,99,10,20,30;                                                 3P      2
 ").First();
             Assert.Equal(new IgesPoint(11, 22, 33), line.P1);
-            var structure = (IgesLine)line.StructureEntity;
+            var structure = (IgesLine)line.StructureEntity!;
             Assert.Equal(new IgesPoint(77, 88, 99), structure.P1);
             Assert.Null(structure.StructureEntity);
         }
@@ -294,7 +294,7 @@ S      0G      0D      0P      0                                        T      1
 304,1,23.,1H0;                                                         1P      1
 110,0.,0.,0.,0.,0.,0.;                                                 3P      2
 ");
-            var lineFont = (IgesPatternLineFontDefinition)line.CustomLineFont;
+            var lineFont = (IgesPatternLineFontDefinition)line.CustomLineFont!;
             Assert.Equal(23.0, lineFont.SegmentLengths.Single());
         }
 
@@ -345,7 +345,7 @@ S      0G      0D      0P      0                                        T      1
 402,1,1,1.,2.,3.,3,7,5;                                                7P      5
 110,0.,0.,0.,0.,0.,0.;                                                 9P      6
 ");
-            Assert.Single(line.LabelDisplay.LabelPlacements);
+            Assert.Single(line.LabelDisplay!.LabelPlacements);
             var placement = line.LabelDisplay.LabelPlacements.Single();
             Assert.IsType<IgesPerspectiveView>(placement.View);
             Assert.Equal(new IgesPoint(1, 2, 3), placement.Location);
@@ -405,7 +405,7 @@ also contains things that look like 7Hstrings and records;             1P      3
 410,0,2.,0,0,0,0,0,0;                                                  1P      1
 110,0.,0.,0.,0.,0.,0.;                                                 3P      2
 ");
-            Assert.Equal(2.0, line.View.ScaleFactor);
+            Assert.Equal(2.0, line.View!.ScaleFactor);
 
             // ensure null view if not specified
             line = (IgesLine)ParseLastEntity(@"
@@ -438,7 +438,7 @@ also contains things that look like 7Hstrings and records;             1P      3
 124,1,2,3,4,5,6,7,8,9,10,11,12;                                        1P      1
 110,11,22,33,44,55,66;                                                 3P      2
 ".Trim('\r', '\n'));
-            var matrix = line.TransformationMatrix;
+            var matrix = line.TransformationMatrix!;
             Assert.Equal(1.0, matrix.R11);
             Assert.Equal(2.0, matrix.R12);
             Assert.Equal(3.0, matrix.R13);

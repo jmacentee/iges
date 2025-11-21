@@ -15,7 +15,7 @@ namespace IxMilia.Iges
         {
             var file = new IgesFile();
             var allLines = new StreamReader(stream).ReadToEnd().Split("\n".ToCharArray()).Select(s => s.TrimEnd()).Where(line => !string.IsNullOrEmpty(line));
-            string terminateLine = null;
+            string? terminateLine = null;
             var startLines = new List<string>();
             var globalLines = new List<string>();
             var directoryLines = new List<string>();
@@ -97,9 +97,9 @@ namespace IxMilia.Iges
             return directoryEntires;
         }
 
-        private static Dictionary<int, Tuple<List<string>, string>> PrepareParameterLines(List<string> parameterLines, IEnumerable<IgesDirectoryData> directoryEntires, char fieldDelimiter, char recordDelimiter)
+        private static Dictionary<int, Tuple<List<string>, string?>> PrepareParameterLines(List<string> parameterLines, IEnumerable<IgesDirectoryData> directoryEntires, char fieldDelimiter, char recordDelimiter)
         {
-            var map = new Dictionary<int, Tuple<List<string>, string>>();
+            var map = new Dictionary<int, Tuple<List<string>, string?>>();
             var fields = new List<string>();
             var state = ParameterParseState.ParsingEntityNumber;
             var current = new StringBuilder();
@@ -209,14 +209,15 @@ namespace IxMilia.Iges
             return map;
         }
 
-        private static void PopulateEntities(IgesFile file, List<IgesDirectoryData> directoryEntries, Dictionary<int, Tuple<List<string>, string>> parameterMap)
+        private static void PopulateEntities(IgesFile file, List<IgesDirectoryData> directoryEntries, Dictionary<int, Tuple<List<string>, string?>> parameterMap)
         {
             var binder = new IgesReaderBinder();
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
-                var parameterValues = parameterMap[dir.ParameterPointer].Item1;
-                var comment = parameterMap[dir.ParameterPointer].Item2;
+                var parameter = parameterMap[dir.ParameterPointer];
+                var parameterValues = parameter.Item1;
+                var comment = parameter.Item2;
                 var entity = IgesEntity.FromData(dir, parameterValues, binder);
                 if (entity != null)
                 {
@@ -225,8 +226,11 @@ namespace IxMilia.Iges
                     entity.BindPointers(dir, binder);
                     entity.OnAfterRead(dir);
                     var postProcessed = entity.PostProcess();
-                    binder.EntityMap[directoryIndex] = postProcessed;
-                    file.Entities.Add(postProcessed);
+                    if (postProcessed is not null)
+                    {
+                        binder.EntityMap[directoryIndex] = postProcessed;
+                        file.Entities.Add(postProcessed);
+                    }
                 }
             }
 
@@ -331,7 +335,7 @@ namespace IxMilia.Iges
             index++; // swallow it
         }
 
-        private static string ParseString(IgesFile file, string str, ref int index, string defaultValue = null)
+        private static string? ParseString(IgesFile file, string str, ref int index, string? defaultValue = null)
         {
             if (index < str.Length && (str[index] == file.FieldDelimiter || str[index] == file.RecordDelimiter))
             {
@@ -442,7 +446,7 @@ namespace IxMilia.Iges
                 return IgesParser.ParseDoubleStrict(sb.ToString());
         }
 
-        internal static DateTime ParseDateTime(string value, DateTime defaultValue)
+        internal static DateTime ParseDateTime(string? value, DateTime defaultValue)
         {
             if (string.IsNullOrEmpty(value))
             {

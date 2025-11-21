@@ -63,7 +63,7 @@ namespace IxMilia.Iges.Entities
             return segmentCount * 2 + 6;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(LineSegments.Count);
             parameters.Add(ArrowHeight);

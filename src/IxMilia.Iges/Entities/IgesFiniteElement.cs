@@ -61,14 +61,14 @@ namespace IxMilia.Iges.Entities
 
         public IgesTopologyType TopologyType { get; protected set; }
         protected virtual int TopologyNumber { get { return (int)TopologyType; } }
-        internal List<IgesNode> InternalNodes { get; private set; }
-        public string ElementTypeName { get; set; }
+        internal List<IgesNode?> InternalNodes { get; private set; }
+        public string? ElementTypeName { get; set; }
 
         public abstract IgesElementEdgeOrder EdgeOrder { get; }
 
         protected IgesFiniteElement(IgesTopologyType topologyType)
         {
-            InternalNodes = new List<IgesNode>();
+            InternalNodes = new List<IgesNode?>();
             TopologyType = topologyType;
         }
 
@@ -77,14 +77,14 @@ namespace IxMilia.Iges.Entities
             throw new NotImplementedException();
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             InternalNodes.Clear();
             AddNodes();
             return InternalNodes;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(this.TopologyNumber);
             parameters.Add(this.InternalNodes.Count);
@@ -98,8 +98,8 @@ namespace IxMilia.Iges.Entities
 
         internal static IgesPoint GetNodeOffset(IgesFiniteElementDummy dummy, int index)
         {
-            return dummy.InternalNodes.Count > index
-                ? dummy.InternalNodes[index].Offset
+            return dummy.InternalNodes.Count > index && dummy.InternalNodes[index] is not null
+                ? dummy.InternalNodes[index]!.Offset
                 : IgesPoint.Origin;
         }
     }

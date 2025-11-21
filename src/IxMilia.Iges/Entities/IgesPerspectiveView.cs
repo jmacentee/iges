@@ -82,7 +82,7 @@ namespace IxMilia.Iges.Entities
             return nextIndex;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             base.WriteParameters(parameters, binder);
             parameters.Add(ViewPlaneNormal.X);

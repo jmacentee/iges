@@ -7,14 +7,14 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.TrimmedParametricSurface; } }
 
-        public IgesEntity Surface { get; set; }
+        public IgesEntity? Surface { get; set; }
         public bool IsOuterBoundaryD { get; set; }
-        public List<IgesEntity> BoundaryEntities { get; private set; }
-        public IgesEntity OuterBoundary { get; set; }
+        public List<IgesEntity?> BoundaryEntities { get; private set; }
+        public IgesEntity? OuterBoundary { get; set; }
 
         public IgesTrimmedParametricSurface()
         {
-            BoundaryEntities = new List<IgesEntity>();
+            BoundaryEntities = new List<IgesEntity?>();
         }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -32,7 +32,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Surface;
             yield return OuterBoundary;
@@ -42,7 +42,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(Surface));
             parameters.Add(!IsOuterBoundaryD);

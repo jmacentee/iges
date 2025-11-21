@@ -9,7 +9,7 @@ namespace IxMilia.Iges.Entities
         public double CharacterBoxWidth { get; set; }
         public double CharacterBoxHeight { get; set; }
         public int FontCode { get; set; }
-        public IgesTextFontDefinition TextFontDefinition { get; set; }
+        public IgesTextFontDefinition? TextFontDefinition { get; set; }
         public double SlantAngle { get; set; }
         public double RotationAngle { get; set; }
         public IgesTextMirroringAxis MirroringAxis { get; set; }
@@ -62,12 +62,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return TextFontDefinition;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(CharacterBoxWidth);
             parameters.Add(CharacterBoxHeight);

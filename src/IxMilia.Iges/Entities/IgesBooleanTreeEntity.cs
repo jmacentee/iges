@@ -4,9 +4,9 @@ namespace IxMilia.Iges.Entities
     {
         public bool IsEntity { get { return true; } }
 
-        public IgesEntity Entity { get; set; }
+        public IgesEntity? Entity { get; set; }
 
-        public IgesBooleanTreeEntity(IgesEntity entity)
+        public IgesBooleanTreeEntity(IgesEntity? entity)
         {
             Entity = entity;
         }

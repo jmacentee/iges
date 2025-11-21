@@ -8,13 +8,13 @@ namespace IxMilia.Iges.Entities
         public override IgesEntityType EntityType { get { return IgesEntityType.BoundedSurface; } }
 
         public bool AreBoundaryEntitiesOnlyInModelSpace { get; set; }
-        public IgesEntity Surface { get; set; }
-        public List<IgesEntity> BoundaryEntities { get; private set; }
+        public IgesEntity? Surface { get; set; }
+        public List<IgesEntity?> BoundaryEntities { get; private set; }
 
         public IgesBoundedSurface()
             : base()
         {
-            BoundaryEntities = new List<IgesEntity>();
+            BoundaryEntities = new List<IgesEntity?>();
         }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -31,7 +31,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return Surface;
             foreach (var boundary in BoundaryEntities)
@@ -40,7 +40,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             
             parameters.Add(!AreBoundaryEntitiesOnlyInModelSpace);

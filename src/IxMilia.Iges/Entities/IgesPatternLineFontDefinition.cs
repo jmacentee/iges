@@ -28,7 +28,7 @@ namespace IxMilia.Iges.Entities
             return segmentCount + 2;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(SegmentLengths.Count);
             parameters.AddRange(SegmentLengths.Cast<object>());

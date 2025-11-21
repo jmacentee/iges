@@ -71,6 +71,7 @@ namespace IxMilia.Iges.Entities
             SplineType = IgesSplineType.Linear;
             UBreakpoints = new List<double>();
             VBreakpoints = new List<double>();
+            SegmentCoefficients = new IgesSplinePolynomialPatchSegment[0, 0];
         }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -154,7 +155,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add((int)SplineType);
             parameters.Add(IsCartesianProduct);

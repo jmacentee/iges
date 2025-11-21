@@ -25,7 +25,7 @@ namespace IxMilia.Iges.Entities
             return 2;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(ViewNumber);
             parameters.Add(ScaleFactor);

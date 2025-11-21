@@ -6,8 +6,8 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.AngularDimension; } }
 
-        public IgesCopiousData FirstWitnessLine { get; set; }
-        public IgesCopiousData SecondWitnessLine { get; set; }
+        public IgesCopiousData? FirstWitnessLine { get; set; }
+        public IgesCopiousData? SecondWitnessLine { get; set; }
         public IgesPoint Vertex { get; set; } = IgesPoint.Origin;
         public double LeaderArcRadius { get; set; }
 
@@ -27,7 +27,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             foreach (var referenced in base.GetReferencedEntities())
             {
@@ -38,7 +38,7 @@ namespace IxMilia.Iges.Entities
             yield return SecondWitnessLine;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(GeneralNote));
             parameters.Add(binder.GetEntityId(FirstWitnessLine));

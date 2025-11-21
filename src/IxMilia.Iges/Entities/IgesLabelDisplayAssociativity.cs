@@ -4,11 +4,11 @@ namespace IxMilia.Iges.Entities
 {
     public class IgesLabelPlacement
     {
-        public IgesViewBase View { get; set; }
+        public IgesViewBase? View { get; set; }
         public IgesPoint Location { get; set; }
-        public IgesLeader Leader { get; set; }
+        public IgesLeader? Leader { get; set; }
         public int Level { get; set; }
-        public IgesEntity Label { get; set; }
+        public IgesEntity? Label { get; set; }
 
         internal IgesLabelPlacement()
         {
@@ -27,7 +27,7 @@ namespace IxMilia.Iges.Entities
     public class IgesLabelDisplayAssociativity : IgesAssociativity
     {
         public List<IgesLabelPlacement> LabelPlacements { get; private set; }
-        public IgesEntity AssociatedEntity { get; internal set; }
+        public IgesEntity? AssociatedEntity { get; internal set; }
 
         public IgesLabelDisplayAssociativity()
             : base()
@@ -57,7 +57,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             foreach (var labelPlacement in LabelPlacements)
             {
@@ -67,7 +67,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(LabelPlacements.Count);
             foreach (var labelPlacement in LabelPlacements)

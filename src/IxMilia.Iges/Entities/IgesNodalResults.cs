@@ -5,7 +5,7 @@ namespace IxMilia.Iges.Entities
 {
     public class IgesNodalResult
     {
-        public IgesNode Node { get; set; }
+        public IgesNode? Node { get; set; }
         public List<double> Values { get; } = new List<double>();
     }
 
@@ -25,7 +25,7 @@ namespace IxMilia.Iges.Entities
             set { EntitySubscript = value; }
         }
 
-        public IgesGeneralNote GeneralNote { get; set; }
+        public IgesGeneralNote? GeneralNote { get; set; }
         public int AnalysisSubcase { get; set; }
         public DateTime AnalysisTime { get; set; }
         public List<IgesNodalResult> Results { get; } = new List<IgesNodalResult>();
@@ -56,7 +56,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return GeneralNote;
             foreach (var result in Results)
@@ -65,7 +65,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(GeneralNote));
             parameters.Add(AnalysisSubcase);

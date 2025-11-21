@@ -7,14 +7,14 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.BooleanTree; } }
 
-        public IIgesBooleanTreeItem RootNode { get; set; }
+        public IIgesBooleanTreeItem? RootNode { get; set; }
 
         public IgesBooleanTree()
             : this(null)
         {
         }
 
-        public IgesBooleanTree(IIgesBooleanTreeItem rootNode)
+        public IgesBooleanTree(IIgesBooleanTreeItem? rootNode)
         {
             EntityUseFlag = IgesEntityUseFlag.Geometry;
             RootNode = rootNode;
@@ -77,18 +77,22 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             return RootNode == null
                 ? new IgesEntity[0]
                 : GetReferencedEntities(RootNode);
         }
 
-        private IEnumerable<IgesEntity> GetReferencedEntities(IIgesBooleanTreeItem node)
+        private IEnumerable<IgesEntity?> GetReferencedEntities(IIgesBooleanTreeItem? node)
         {
-            if (node.IsEntity)
+            if (node is null)
             {
-                yield return ((IgesBooleanTreeEntity)node).Entity;
+                yield break;
+            }
+            else if (node.IsEntity && node is IgesBooleanTreeEntity boolEntity)
+            {
+                yield return boolEntity.Entity;
             }
             else
             {
@@ -105,7 +109,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             if (RootNode == null)
             {
@@ -118,9 +122,13 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        private int GetItemCount(IIgesBooleanTreeItem node)
+        private int GetItemCount(IIgesBooleanTreeItem? node)
         {
-            if (node.IsEntity)
+            if (node is null)
+            {
+                return 0;
+            }
+            else if (node.IsEntity)
             {
                 return 1;
             }
@@ -133,9 +141,13 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        private void WriteParameters(List<object> parameters, IgesWriterBinder binder, IIgesBooleanTreeItem node)
+        private void WriteParameters(List<object?> parameters, IgesWriterBinder binder, IIgesBooleanTreeItem? node)
         {
-            if (node.IsEntity)
+            if (node is null)
+            {
+                return;
+            }
+            else if (node.IsEntity)
             {
                 parameters.Add(-binder.GetEntityId(((IgesBooleanTreeEntity)node).Entity));
             }

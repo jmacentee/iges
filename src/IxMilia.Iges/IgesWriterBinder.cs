@@ -13,7 +13,7 @@ namespace IxMilia.Iges
             _entityMap = entityMap;
         }
 
-        public int GetEntityId(IgesEntity entity)
+        public int GetEntityId(IgesEntity? entity)
         {
             if (entity == null)
             {

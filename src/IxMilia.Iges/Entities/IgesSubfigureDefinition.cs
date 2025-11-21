@@ -9,10 +9,10 @@ namespace IxMilia.Iges.Entities
 
         // properties
         public int Depth { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         // custom properties
-        public List<IgesEntity> Entities { get; private set; }
+        public List<IgesEntity?> Entities { get; private set; }
 
         public IgesSubfigureDefinition()
             : base()
@@ -20,7 +20,7 @@ namespace IxMilia.Iges.Entities
             this.Depth = 0;
             this.Name = null;
             this.EntityUseFlag = IgesEntityUseFlag.Definition;
-            Entities = new List<IgesEntity>();
+            Entities = new List<IgesEntity?>();
         }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -36,12 +36,12 @@ namespace IxMilia.Iges.Entities
             return entityCount + 3;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             return Entities;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(this.Depth);
             parameters.Add(this.Name);

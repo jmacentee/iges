@@ -6,8 +6,8 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.SurfaceOfRevolution; } }
 
-        public IgesLine AxisOfRevolution { get; set; }
-        public IgesEntity Generatrix { get; set; }
+        public IgesLine? AxisOfRevolution { get; set; }
+        public IgesEntity? Generatrix { get; set; }
         public double StartAngle { get; set; }
         public double EndAngle { get; set; }
 
@@ -20,13 +20,13 @@ namespace IxMilia.Iges.Entities
             return 4;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return AxisOfRevolution;
             yield return Generatrix;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(AxisOfRevolution));
             parameters.Add(binder.GetEntityId(Generatrix));

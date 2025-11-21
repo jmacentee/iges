@@ -31,7 +31,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(this.Radius);
             if (Center != IgesPoint.Origin)

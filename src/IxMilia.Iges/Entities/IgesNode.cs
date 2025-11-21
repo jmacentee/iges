@@ -8,7 +8,7 @@ namespace IxMilia.Iges.Entities
 
         public IgesPoint Offset { get; set; }
 
-        public IgesTransformationMatrix DisplacementCoordinateSystem { get; set; }
+        public IgesTransformationMatrix? DisplacementCoordinateSystem { get; set; }
 
         public uint NodeNumber
         {
@@ -37,12 +37,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return DisplacementCoordinateSystem;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(this.Offset.X);
             parameters.Add(this.Offset.Y);

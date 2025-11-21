@@ -6,7 +6,7 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.OrdinateDimension; } }
 
-        public IgesCopiousData WitnessLine { get; set; }
+        public IgesCopiousData? WitnessLine { get; set; }
 
         public bool HasSupplementalLeader { get { return WitnessLine != null && FirstLeader != null; } }
 
@@ -41,7 +41,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             foreach (var referenced in base.GetReferencedEntities())
             {
@@ -56,10 +56,10 @@ namespace IxMilia.Iges.Entities
             FormNumber = HasSupplementalLeader ? 1 : 0;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(binder.GetEntityId(GeneralNote));
-            parameters.Add(binder.GetEntityId((IgesEntity)WitnessLine ?? FirstLeader));
+            parameters.Add(binder.GetEntityId((IgesEntity?)WitnessLine ?? FirstLeader));
             if (HasSupplementalLeader)
             {
                 parameters.Add(binder.GetEntityId(FirstLeader));

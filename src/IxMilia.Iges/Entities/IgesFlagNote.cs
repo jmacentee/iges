@@ -14,11 +14,11 @@ namespace IxMilia.Iges.Entities
         /// The flag's rotation angle in radians.
         /// </summary>
         public double RotationAngle { get; set; }
-        public IgesGeneralNote GeneralNote { get; set; }
-        public IList<IgesLeader> Leaders { get; private set; }
+        public IgesGeneralNote? GeneralNote { get; set; }
+        public IList<IgesLeader?> Leaders { get; private set; }
 
         // computed properties
-        private IgesTextString NoteString { get { return GeneralNote?.Strings?.FirstOrDefault(); } }
+        private IgesTextString? NoteString { get { return GeneralNote?.Strings?.FirstOrDefault(); } }
 
         /// <summary>
         /// The height of the flag.  May never be less than 0.3 inches.
@@ -49,7 +49,7 @@ namespace IxMilia.Iges.Entities
         {
             EntityUseFlag = IgesEntityUseFlag.Annotation;
             Location = IgesPoint.Origin;
-            Leaders = new List<IgesLeader>();
+            Leaders = new List<IgesLeader?>();
         }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -59,7 +59,7 @@ namespace IxMilia.Iges.Entities
             RotationAngle = Double(parameters, index++);
             binder.BindEntity(Integer(parameters, index++), note => GeneralNote = note as IgesGeneralNote);
             var leaderCount = Integer(parameters, index++);
-            Leaders = new IgesLeader[leaderCount].ToList();
+            Leaders = new IgesLeader?[leaderCount].ToList();
             for (int i = 0; i < leaderCount; i++)
             {
                 var idx = i;
@@ -69,7 +69,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return GeneralNote;
             foreach (var leader in Leaders)
@@ -78,7 +78,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(Location.X);
             parameters.Add(Location.Y);

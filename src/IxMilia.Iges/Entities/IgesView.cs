@@ -9,7 +9,7 @@ namespace IxMilia.Iges.Entities
         {
         }
 
-        public IgesView(int viewNumber, double scaleFactor, IgesPlane left, IgesPlane top, IgesPlane right, IgesPlane bottom, IgesPlane back, IgesPlane front)
+        public IgesView(int viewNumber, double scaleFactor, IgesPlane? left, IgesPlane? top, IgesPlane? right, IgesPlane? bottom, IgesPlane? back, IgesPlane? front)
             : base(viewNumber, scaleFactor)
         {
             this.FormNumber = 0;
@@ -21,17 +21,17 @@ namespace IxMilia.Iges.Entities
             ViewVolumeFront = front;
         }
 
-        public IgesPlane ViewVolumeLeft { get; set; }
+        public IgesPlane? ViewVolumeLeft { get; set; }
 
-        public IgesPlane ViewVolumeTop { get; set; }
+        public IgesPlane? ViewVolumeTop { get; set; }
 
-        public IgesPlane ViewVolumeRight { get; set; }
+        public IgesPlane? ViewVolumeRight { get; set; }
 
-        public IgesPlane ViewVolumeBottom { get; set; }
+        public IgesPlane? ViewVolumeBottom { get; set; }
 
-        public IgesPlane ViewVolumeBack { get; set; }
+        public IgesPlane? ViewVolumeBack { get; set; }
 
-        public IgesPlane ViewVolumeFront { get; set; }
+        public IgesPlane? ViewVolumeFront { get; set; }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
@@ -45,7 +45,7 @@ namespace IxMilia.Iges.Entities
             return nextIndex + 6;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return ViewVolumeLeft;
             yield return ViewVolumeTop;
@@ -55,7 +55,7 @@ namespace IxMilia.Iges.Entities
             yield return ViewVolumeFront;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             base.WriteParameters(parameters, binder);
             parameters.Add(binder.GetEntityId(ViewVolumeLeft));

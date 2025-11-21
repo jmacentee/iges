@@ -24,16 +24,16 @@ namespace IxMilia.Iges.Entities
 
         private int _lineCount;
         public int FormNumber { get; protected set; }
-        public IgesEntity StructureEntity { get; set; }
-        public IgesViewBase View { get; set; }
-        public IgesTransformationMatrix TransformationMatrix { get; set; }
+        public IgesEntity? StructureEntity { get; set; }
+        public IgesViewBase? View { get; set; }
+        public IgesTransformationMatrix? TransformationMatrix { get; set; }
 
         public IgesBlankStatus BlankStatus { get; set; }
         public IgesSubordinateEntitySwitchType SubordinateEntitySwitchType { get; set; }
         public IgesEntityUseFlag EntityUseFlag { get; set; }
         public IgesHierarchy Hierarchy { get; set; }
 
-        private IgesColorDefinition _customColor;
+        private IgesColorDefinition? _customColor;
         private IgesColorNumber _color;
 
         public IgesColorNumber Color
@@ -46,7 +46,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        public IgesColorDefinition CustomColor
+        public IgesColorDefinition? CustomColor
         {
             get { return _customColor; }
             set
@@ -64,7 +64,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        private IgesLineFontDefinitionBase _customLineFont;
+        private IgesLineFontDefinitionBase? _customLineFont;
         private IgesLineFontPattern _lineFont;
 
         public IgesLineFontPattern LineFont
@@ -77,7 +77,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        public IgesLineFontDefinitionBase CustomLineFont
+        public IgesLineFontDefinitionBase? CustomLineFont
         {
             get { return _customLineFont; }
             set
@@ -98,8 +98,8 @@ namespace IxMilia.Iges.Entities
         private int _levelsPointer;
         public HashSet<int> Levels { get; private set; }
 
-        private string _entityLabel;
-        public string EntityLabel
+        private string? _entityLabel;
+        public string? EntityLabel
         {
             get { return _entityLabel; }
             set { _entityLabel = value == null || value.Length <= 8 ? value : value.Substring(0, 8); }
@@ -112,14 +112,14 @@ namespace IxMilia.Iges.Entities
             set { _entitySubscript = Math.Min(99999999u, value); } // max 8 digits
         }
 
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
         public int LineWeight { get; set; }
 
         private int _structurePointer;
         private int _labelDisplayPointer;
-        private IgesLabelDisplayAssociativity _labelDisplay;
+        private IgesLabelDisplayAssociativity? _labelDisplay;
 
-        public IgesLabelDisplayAssociativity LabelDisplay
+        public IgesLabelDisplayAssociativity? LabelDisplay
         {
             get { return _labelDisplay; }
             set
@@ -137,13 +137,13 @@ namespace IxMilia.Iges.Entities
         private int _transformationMatrixPointer;
 
         public List<IgesEntity> AssociatedEntities { get; }
-        public List<IgesEntity> Properties { get; }
+        public List<IgesEntity?> Properties { get; }
 
         protected IgesEntity()
         {
             Levels = new HashSet<int>();
             AssociatedEntities = new List<IgesEntity>();
-            Properties = new List<IgesEntity>();
+            Properties = new List<IgesEntity?>();
             if (!(this is IgesTransformationMatrix))
             {
                 TransformationMatrix = IgesTransformationMatrix.Identity;
@@ -160,9 +160,9 @@ namespace IxMilia.Iges.Entities
         {
         }
 
-        internal abstract void WriteParameters(List<object> parameters, IgesWriterBinder binder);
+        internal abstract void WriteParameters(List<object?> parameters, IgesWriterBinder binder);
 
-        internal virtual IEnumerable<IgesEntity> GetReferencedEntities()
+        internal virtual IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield break;
         }
@@ -171,7 +171,7 @@ namespace IxMilia.Iges.Entities
         {
         }
 
-        internal virtual IgesEntity PostProcess()
+        internal virtual IgesEntity? PostProcess()
         {
             return this;
         }
@@ -277,7 +277,7 @@ namespace IxMilia.Iges.Entities
                 (int)Hierarchy);
         }
 
-        private void SetStatusNumber(string value)
+        private void SetStatusNumber(string? value)
         {
             if (value == null)
             {
@@ -430,7 +430,7 @@ namespace IxMilia.Iges.Entities
                 color = (int)Color;
             }
 
-            var parameters = new List<object>();
+            var parameters = new List<object?>();
             parameters.Add((int)EntityType);
             this.WriteParameters(parameters, writerState.WriterBinder);
 
@@ -482,14 +482,14 @@ namespace IxMilia.Iges.Entities
             return IgesParameterReader.IntegerOrDefault(values, index, defaultValue);
         }
 
-        protected string String(List<string> values, int index)
+        protected string? String(List<string> values, int index)
         {
             return IgesParameterReader.String(values, index);
         }
 
         protected string StringOrDefault(List<string> values, int index, string defaultValue)
         {
-            return IgesParameterReader.StringOrDefault(values, index, defaultValue);
+            return IgesParameterReader.StringOrDefault(values, index, defaultValue)!;
         }
 
         protected bool Boolean(List<string> values, int index)

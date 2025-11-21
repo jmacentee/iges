@@ -4,15 +4,15 @@ namespace IxMilia.Iges.Entities
 {
     public class IgesSolidAndTransformationMatrix
     {
-        public IgesEntity Solid { get; set; }
-        public IgesTransformationMatrix TransformationMatrix { get; set; }
+        public IgesEntity? Solid { get; set; }
+        public IgesTransformationMatrix? TransformationMatrix { get; set; }
 
         internal IgesSolidAndTransformationMatrix()
             : this(null, null)
         {
         }
 
-        public IgesSolidAndTransformationMatrix(IgesEntity solid, IgesTransformationMatrix matrix)
+        public IgesSolidAndTransformationMatrix(IgesEntity? solid, IgesTransformationMatrix? matrix)
         {
             Solid = solid;
             TransformationMatrix = matrix;
@@ -53,7 +53,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             foreach (var solid in Solids)
             {
@@ -62,7 +62,7 @@ namespace IxMilia.Iges.Entities
             }
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(Solids.Count);
             foreach (var solid in Solids)

@@ -44,11 +44,11 @@ namespace IxMilia.Iges.Entities
 
         // properties
         public int FontCode { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int Scale { get; set; }
         public List<IgesTextFontDefinitionCharacter> Characters { get; private set; }
         public int SupercedesCode { get; set; }
-        public IgesTextFontDefinition SupercedesFont { get; set; }
+        public IgesTextFontDefinition? SupercedesFont { get; set; }
 
         public IgesTextFontDefinition()
             : base()
@@ -98,12 +98,12 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override IEnumerable<IgesEntity> GetReferencedEntities()
+        internal override IEnumerable<IgesEntity?> GetReferencedEntities()
         {
             yield return SupercedesFont;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             parameters.Add(FontCode);
             parameters.Add(Name);

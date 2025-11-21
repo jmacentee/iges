@@ -48,6 +48,8 @@ namespace IxMilia.Iges.Entities
         {
             FirstKnotValueSequence = new List<double>();
             SecondKnotValueSequence = new List<double>();
+            Weights = new double[0, 0];
+            ControlPoints = new IgesPoint[0, 0];
         }
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
@@ -108,7 +110,7 @@ namespace IxMilia.Iges.Entities
             return index;
         }
 
-        internal override void WriteParameters(List<object> parameters, IgesWriterBinder binder)
+        internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
         {
             Debug.Assert(Weights != null);
             Debug.Assert(ControlPoints != null);
