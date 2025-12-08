@@ -72,6 +72,7 @@ namespace IxMilia.Iges.Entities
         AssociativityInstance = 402,
         Property = 406,
         SingularSubfigureInstance = 408,
-        View = 410
+        View = 410,
+        Group = 504 // Added for IGES Group/Manifold Solid B-Rep Object
     }
 }
