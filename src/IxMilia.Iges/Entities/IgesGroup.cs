@@ -22,14 +22,21 @@ namespace IxMilia.Iges.Entities
         {
             int count = int.Parse(parameters[0]);
             var group = new IgesGroup();
-            for (int i = 0; i < count; i++)
+            int found = 0;
+            // Start at 1 (skip count), try all remaining parameters as entity indices until we have 'count' entities
+            for (int i = 1; i < parameters.Count && found < count; i++)
             {
-                int deIndex = int.Parse(parameters[i + 1]);
-                binder.BindEntity(deIndex, entity =>
+                if (int.TryParse(parameters[i], out int deIndex))
                 {
-                    if (entity != null)
-                        group.AssociatedEntities.Add(entity);
-                });
+                    binder.BindEntity(deIndex, entity =>
+                    {
+                        if (entity != null)
+                        {
+                            group.AssociatedEntities.Add(entity);
+                            found++;
+                        }
+                    });
+                }
             }
             return group;
         }
