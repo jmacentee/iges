@@ -20,24 +20,42 @@ namespace IxMilia.Iges.Entities
 
         internal static IgesGroup FromParameters(List<string> parameters, IgesDirectoryData directoryData, IgesReaderBinder binder)
         {
+            // DEBUG: Print all parameters received for this group
+            //System.Console.WriteLine($"IgesGroup.FromParameters: parameters.Count={parameters.Count}");
+            //for (int i = 0; i < parameters.Count; i++)
+            //    System.Console.WriteLine($"  param[{i}]: '{parameters[i]}'");
+
             int count = int.Parse(parameters[0]);
             var group = new IgesGroup();
-            int found = 0;
-            // Start at 1 (skip count), try all remaining parameters as entity indices until we have 'count' entities
-            for (int i = 1; i < parameters.Count && found < count; i++)
+
+            // FIX: Process all parameters, trim whitespace, and log every binding attempt.
+            int processed = 0;
+            for (int i = 1; i < parameters.Count; i++)
             {
-                if (int.TryParse(parameters[i], out int deIndex))
+                var param = parameters[i].Trim();
+                if (int.TryParse(param, out int deIndex))
                 {
+                    //System.Console.WriteLine($"  Trying to bind DE index: {deIndex}");
                     binder.BindEntity(deIndex, entity =>
                     {
                         if (entity != null)
                         {
                             group.AssociatedEntities.Add(entity);
-                            found++;
+                            //System.Console.WriteLine($"    Bound entity: {entity.EntityType} label: {entity.EntityLabel}");
+                        }
+                        else
+                        {
+                            //System.Console.WriteLine($"    DE index {deIndex} did not resolve to an entity.");
                         }
                     });
+                    processed++;
+                }
+                else
+                {
+                    //System.Console.WriteLine($"  Skipped non-integer parameter: '{param}'");
                 }
             }
+            //System.Console.WriteLine($"IgesGroup.FromParameters: processed {processed} parameters, found {group.AssociatedEntities.Count} entities (expected {count})");
             return group;
         }
 
