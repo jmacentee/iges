@@ -251,6 +251,9 @@ namespace IxMilia.Iges.Entities
                             break;
                     }
                     break;
+                case IgesEntityType.Group:
+                    entity = IgesGroup.FromParameters(parameters, directoryData, binder);
+                    break;
             }
 
             if (entity != null)
