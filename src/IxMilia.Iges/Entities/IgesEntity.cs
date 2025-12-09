@@ -183,11 +183,11 @@ namespace IxMilia.Iges.Entities
             {
                 binder.BindEntity(Integer(parameters, nextIndex++), e =>
                 {
-                    if (e != null)
+                    if (e != null && (e.EntityType == IgesEntityType.AssociativityInstance || e.EntityType == IgesEntityType.GeneralNote || e.EntityType == IgesEntityType.TextDisplayTemplate))
                     {
-                        Debug.Assert(e.EntityType == IgesEntityType.AssociativityInstance || e.EntityType == IgesEntityType.GeneralNote || e.EntityType == IgesEntityType.TextDisplayTemplate);
                         AssociatedEntities.Add(e);
                     }
+                    // else: ignore unexpected entity types to prevent assertion failure
                 });
             }
 

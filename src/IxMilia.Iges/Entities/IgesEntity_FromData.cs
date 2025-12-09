@@ -254,6 +254,15 @@ namespace IxMilia.Iges.Entities
                 case IgesEntityType.Group:
                     entity = IgesGroup.FromParameters(parameters, directoryData, binder);
                     break;
+                case IgesEntityType.Face:
+                    entity = new IgesFace();
+                    break;
+                case IgesEntityType.Loop:
+                    entity = new IgesLoop();
+                    break;
+                case IgesEntityType.Shell:
+                    entity = new IgesShell();
+                    break;
             }
 
             if (entity != null)
