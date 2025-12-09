@@ -213,8 +213,11 @@ namespace IxMilia.Iges
         {
             var binder = new IgesReaderBinder();
             var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir, int directoryIndex)>();
-
-            // First pass: create all entities and register them by directory index (1-based, matching IGES pointers)
+            
+            System.Console.WriteLine($"[POPULATE] Total directory entries: {directoryEntries.Count}");
+            
+            // First pass: create all entities and register them
+            // Try registering by BOTH 0-based and 1-based indices
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
@@ -225,23 +228,32 @@ namespace IxMilia.Iges
                 if (entity != null)
                 {
                     entity.Comment = comment;
-                    // Use 1-based directory index as the key (matching IGES file pointers)
-                    int pointerKey = i + 1;
-                    binder.EntityMap[pointerKey] = entity;
+                    
+                    // Register with BOTH keys for now to debug
+                    binder.EntityMap[i] = entity;           // 0-based
+                    binder.EntityMap[i + 1] = entity;       // 1-based
+                    
+                    if (i < 55)
+                    {
+                        System.Console.WriteLine($"[POPULATE] Entry {i}: type={dir.EntityType}, 0-based key={i}, 1-based key={i+1}");
+                    }
+                    
                     entitiesToProcess.Add((entity, dir, i));
                 }
             }
-
-            // Second pass: bind pointers and post-process (now all entities are registered)
+            
+            System.Console.WriteLine($"[POPULATE] Pass 1 complete: registered {entitiesToProcess.Count} entities");
+            
+            // Second pass: bind pointers and post-process
             foreach (var (entity, dir, directoryIndex) in entitiesToProcess)
             {
                 entity.BindPointers(dir, binder);
                 entity.OnAfterRead(dir);
                 var postProcessed = entity.PostProcess();
-                int pointerKey = directoryIndex + 1;
                 if (postProcessed is not null)
                 {
-                    binder.EntityMap[pointerKey] = postProcessed;
+                    binder.EntityMap[directoryIndex] = postProcessed;
+                    binder.EntityMap[directoryIndex + 1] = postProcessed;
                     file.Entities.Add(postProcessed);
                 }
                 else
@@ -249,7 +261,7 @@ namespace IxMilia.Iges
                     file.Entities.Add(entity);
                 }
             }
-
+            
             // Third pass: flush all remaining entity bindings
             binder.BindRemainingEntities();
         }

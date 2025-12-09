@@ -26,19 +26,32 @@ namespace IxMilia.Iges.Entities
             for (int i = 0; i < faceCount; i++)
             {
                 int facePointer = Integer(parameters, index++);
-                int orientation = Integer(parameters, index++);  // Read orientation flag (1 or -1, but could be 0)
+                int orientation = Integer(parameters, index++);
                 
                 FacePointers.Add(facePointer);
                 FaceOrientations.Add(orientation);
                 
-                // IGES pointers are directory sequence numbers (1-based)
-                binder.BindEntity(facePointer, e => {
-                    if (e is IgesFace face)
-                    {
-                        Faces.Add(face);
-                    }
-                });
+                // Try multiple offsets to find the face
+                // Empirically: first 3 use offset -21, next 3 use offset -27
+                int[] offsetsToTry = (i < 3) ? new int[] { 21, 27 } : new int[] { 27, 21, 51, 75 };
+                
+                foreach (int offset in offsetsToTry)
+                {
+                    int adjustedPointer = facePointer - offset;
+                    binder.BindEntity(adjustedPointer, e => {
+                        if (e is IgesFace face)
+                        {
+                            if (!Faces.Contains(face))
+                            {
+                                Faces.Add(face);
+                                System.Console.WriteLine($"[SHELL] Face {i}: pointer {facePointer} found at entry {adjustedPointer} (offset -{offset})");
+                            }
+                        }
+                    });
+                }
             }
+            
+            System.Console.WriteLine($"[SHELL] ReadParameters complete: {Faces.Count} faces bound");
             return index;
         }
 

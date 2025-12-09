@@ -6,68 +6,28 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType => IgesEntityType.Loop;
 
-        // Added for LaserConvert compatibility
         public List<IgesEntity>? Curves { get; set; }
         public bool IsOuter { get; set; }
-        
-        // Store curve pointers for later binding
-        private List<int> _curvePointers = new List<int>();
-        private IgesReaderBinder? _binder;
 
         public IgesLoop() {}
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             int index = 0;
-            
-            int firstParam = Integer(parameters, index++);
-            
+            int curveCount = Integer(parameters, index++);
             Curves = new List<IgesEntity>();
-            _curvePointers.Clear();
-            _binder = binder;
             
-            // Parse pairs of (pointer, orientation)
-            while (index < parameters.Count)
+            for (int i = 0; i < curveCount; i++)
             {
-                int pointer = Integer(parameters, index++);
-                
-                if (index == parameters.Count)
-                {
-                    IsOuter = (pointer == 1);
-                    break;
-                }
-                
-                if (pointer > 0)
-                {
-                    int orientation = Integer(parameters, index++);
-                    _curvePointers.Add(pointer);
-                }
-                else
-                {
-                    int _ = Integer(parameters, index++);
-                }
+                int curvePointer = Integer(parameters, index++);
+                binder.BindEntity(curvePointer, e => {
+                    if (e != null)
+                        Curves.Add(e);
+                });
             }
             
-            return parameters.Count;
-        }
-
-        internal override void OnAfterRead(IgesDirectoryData directoryData)
-        {
-            // Bind all curve/edge pointers
-            foreach (var curvePointer in _curvePointers)
-            {
-                if (curvePointer > 0 && _binder != null)
-                {
-                    _binder.BindEntity(curvePointer, e => {
-                        if (e != null)
-                        {
-                            Curves.Add(e);
-                        }
-                    });
-                }
-            }
-            
-            base.OnAfterRead(directoryData);
+            IsOuter = (index < parameters.Count) ? Integer(parameters, index++) == 1 : false;
+            return index;
         }
 
         internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
@@ -80,7 +40,6 @@ namespace IxMilia.Iges.Entities
                     parameters.Add(binder.GetEntityId(curve));
                 }
             }
-            // Write IsOuter flag (0 = inner, 1 = outer)
             parameters.Add(IsOuter ? 1 : 0);
         }
     }
