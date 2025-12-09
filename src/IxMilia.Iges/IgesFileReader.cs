@@ -214,10 +214,8 @@ namespace IxMilia.Iges
             var binder = new IgesReaderBinder();
             var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir, int directoryIndex)>();
             
-            System.Console.WriteLine($"[POPULATE] Total directory entries: {directoryEntries.Count}");
-            
             // First pass: create all entities and register them
-            // Try registering by BOTH 0-based and 1-based indices
+            // Register by BOTH 0-based and 1-based indices to handle various pointer schemes
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
@@ -228,21 +226,11 @@ namespace IxMilia.Iges
                 if (entity != null)
                 {
                     entity.Comment = comment;
-                    
-                    // Register with BOTH keys for now to debug
-                    binder.EntityMap[i] = entity;           // 0-based
-                    binder.EntityMap[i + 1] = entity;       // 1-based
-                    
-                    if (i < 55)
-                    {
-                        System.Console.WriteLine($"[POPULATE] Entry {i}: type={dir.EntityType}, 0-based key={i}, 1-based key={i+1}");
-                    }
-                    
+                    binder.EntityMap[i] = entity;
+                    binder.EntityMap[i + 1] = entity;
                     entitiesToProcess.Add((entity, dir, i));
                 }
             }
-            
-            System.Console.WriteLine($"[POPULATE] Pass 1 complete: registered {entitiesToProcess.Count} entities");
             
             // Second pass: bind pointers and post-process
             foreach (var (entity, dir, directoryIndex) in entitiesToProcess)

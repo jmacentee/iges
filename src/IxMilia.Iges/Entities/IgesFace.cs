@@ -9,6 +9,8 @@ namespace IxMilia.Iges.Entities
         // Added for LaserConvert compatibility
         public IgesEntity? Surface { get; set; }
         public List<IgesLoop>? Loops { get; set; }
+        public List<int> EdgePointers { get; set; } = new List<int>();
+        public List<IgesEntity> Edges { get; set; } = new List<IgesEntity>();  // Resolved edges
         
         // Store the surface pointer and loop pointers for later binding
         private int _surfacePointer;
@@ -24,36 +26,89 @@ namespace IxMilia.Iges.Entities
             _surfacePointer = Integer(parameters, index++);
             _binder = binder;
             
-            // Loop count
+            // Next parameter: loop count (standard IGES)
             int loopCount = Integer(parameters, index++);
             Loops = new List<IgesLoop>();
             _loopPointers.Clear();
+            EdgePointers.Clear();
             
-            // If loopCount > 0, the next loopCount parameters are loop pointers
-            for (int i = 0; i < loopCount; i++)
+            // Skip any flag/padding
+            if (index < parameters.Count && Integer(parameters, index) == 0)
+            {
+                index++;
+            }
+            
+            // Extract edge pointers from the remaining parameters
+            // Plasticity pattern: edge_ptr, orientation, 0, 0, 0, edge_ptr, orientation, 0, 0, 0, ...
+            while (index + 4 < parameters.Count)
+            {
+                int p1 = Integer(parameters, index);
+                int p2 = Integer(parameters, index + 1);
+                int p3 = Integer(parameters, index + 2);
+                int p4 = Integer(parameters, index + 3);
+                int p5 = Integer(parameters, index + 4);
+                
+                // Look for pattern: X, any, 0, 0, 0 where X might be edge pointer
+                if (p1 > 10 && p3 == 0 && p4 == 0 && p5 == 0)
+                {
+                    EdgePointers.Add(p1);
+                    index += 5;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+            
+            // Store loop pointers for standard IGES binding
+            for (int i = 0; i < loopCount && index < parameters.Count; i++)
             {
                 int loopPointer = Integer(parameters, index++);
                 _loopPointers.Add(loopPointer);
             }
             
-            return index;
+            return parameters.Count;
         }
 
         internal override void OnAfterRead(IgesDirectoryData directoryData)
         {
-            // Now bind the surface pointer (after all entities have been registered)
+            // Bind the surface pointer
             if (_surfacePointer > 0 && _binder != null)
             {
                 _binder.BindEntity(_surfacePointer, e => Surface = e);
             }
             
-            // Bind loop pointers if we have any
+            // Bind edge pointers with fallback offsets (same as Shell uses for faces)
+            foreach (var edgePtr in EdgePointers)
+            {
+                if (edgePtr > 0 && _binder != null)
+                {
+                    // Try multiple offsets like Shell does for faces
+                    int[] offsetsToTry = new int[] { 0, 21, 27, 51, 75 };
+                    
+                    foreach (int offset in offsetsToTry)
+                    {
+                        int adjustedPtr = edgePtr - offset;
+                        _binder.BindEntity(adjustedPtr, e => {
+                            if (e is IgesLine || e is IgesCircularArc || e is IgesRationalBSplineCurve || e is IgesCompositeCurve)
+                            {
+                                if (!Edges.Contains(e))
+                                {
+                                    Edges.Add(e);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            
+            // Bind loop pointers (standard IGES)
             foreach (var loopPointer in _loopPointers)
             {
                 if (loopPointer > 0 && _binder != null)
                 {
                     _binder.BindEntity(loopPointer, e => {
-                        if (e is IgesLoop loop)
+                        if (e is IgesLoop loop && !Loops.Contains(loop))
                             Loops.Add(loop);
                     });
                 }

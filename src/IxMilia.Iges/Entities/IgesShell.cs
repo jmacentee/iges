@@ -32,7 +32,7 @@ namespace IxMilia.Iges.Entities
                 FaceOrientations.Add(orientation);
                 
                 // Try multiple offsets to find the face
-                // Empirically: first 3 use offset -21, next 3 use offset -27
+                // Empirically: Plasticity uses different pointer schemes for different faces
                 int[] offsetsToTry = (i < 3) ? new int[] { 21, 27 } : new int[] { 27, 21, 51, 75 };
                 
                 foreach (int offset in offsetsToTry)
@@ -44,14 +44,12 @@ namespace IxMilia.Iges.Entities
                             if (!Faces.Contains(face))
                             {
                                 Faces.Add(face);
-                                System.Console.WriteLine($"[SHELL] Face {i}: pointer {facePointer} found at entry {adjustedPointer} (offset -{offset})");
                             }
                         }
                     });
                 }
             }
             
-            System.Console.WriteLine($"[SHELL] ReadParameters complete: {Faces.Count} faces bound");
             return index;
         }
 

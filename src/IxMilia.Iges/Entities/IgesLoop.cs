@@ -14,10 +14,15 @@ namespace IxMilia.Iges.Entities
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             int index = 0;
+            
+            // Plasticity format: surface_ptr, curve_count, curve_ptr(s), ...
+            int surfacePtr = Integer(parameters, index++);
             int curveCount = Integer(parameters, index++);
+            
             Curves = new List<IgesEntity>();
             
-            for (int i = 0; i < curveCount; i++)
+            // Read the specified number of curve pointers
+            for (int i = 0; i < curveCount && index < parameters.Count; i++)
             {
                 int curvePointer = Integer(parameters, index++);
                 binder.BindEntity(curvePointer, e => {
@@ -26,8 +31,14 @@ namespace IxMilia.Iges.Entities
                 });
             }
             
-            IsOuter = (index < parameters.Count) ? Integer(parameters, index++) == 1 : false;
-            return index;
+            // IsOuter is typically the last parameter
+            IsOuter = false;
+            if (index < parameters.Count)
+            {
+                IsOuter = Integer(parameters, index++) == 1;
+            }
+            
+            return parameters.Count;
         }
 
         internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
