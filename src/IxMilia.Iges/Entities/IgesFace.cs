@@ -78,26 +78,48 @@ namespace IxMilia.Iges.Entities
                 _binder.BindEntity(_surfacePointer, e => Surface = e);
             }
             
-            // Bind edge pointers with fallback offsets (same as Shell uses for faces)
+            // Bind edge pointers with intelligent offset matching
             foreach (var edgePtr in EdgePointers)
             {
                 if (edgePtr > 0 && _binder != null)
                 {
-                    // Try multiple offsets like Shell does for faces
-                    int[] offsetsToTry = new int[] { 0, 21, 27, 51, 75 };
+                    // Try to find this edge with smart offset logic
+                    bool found = false;
                     
-                    foreach (int offset in offsetsToTry)
-                    {
-                        int adjustedPtr = edgePtr - offset;
-                        _binder.BindEntity(adjustedPtr, e => {
-                            if (e is IgesLine || e is IgesCircularArc || e is IgesRationalBSplineCurve || e is IgesCompositeCurve)
+                    // First try: direct pointer (standard IGES)
+                    _binder.BindEntity(edgePtr, e => {
+                        if (!found && (e is IgesLine || e is IgesCircularArc || e is IgesRationalBSplineCurve || e is IgesCompositeCurve))
+                        {
+                            if (!Edges.Contains(e))
                             {
-                                if (!Edges.Contains(e))
-                                {
-                                    Edges.Add(e);
-                                }
+                                Edges.Add(e);
+                                found = true;
                             }
-                        });
+                        }
+                    });
+                    
+                    // If not found, try systematic offsets
+                    if (!found)
+                    {
+                        for (int offset = 1; offset <= 100; offset++)
+                        {
+                            int adjustedPtr = edgePtr - offset;
+                            if (adjustedPtr > 0)
+                            {
+                                _binder.BindEntity(adjustedPtr, e => {
+                                    if (!found && (e is IgesLine || e is IgesCircularArc || e is IgesRationalBSplineCurve || e is IgesCompositeCurve))
+                                    {
+                                        if (!Edges.Contains(e))
+                                        {
+                                            Edges.Add(e);
+                                            found = true;
+                                        }
+                                    }
+                                });
+                            }
+                            
+                            if (found) break;
+                        }
                     }
                 }
             }
