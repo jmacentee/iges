@@ -6,6 +6,10 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType => IgesEntityType.Face;
 
+        // Added for LaserConvert compatibility
+        public IgesEntity? Surface { get; set; }
+        public List<IgesLoop>? Loops { get; set; }
+
         public IgesFace() {}
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)

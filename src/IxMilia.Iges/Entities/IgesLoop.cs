@@ -6,6 +6,10 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType => IgesEntityType.Loop;
 
+        // Added for LaserConvert compatibility
+        public List<IgesEntity>? Curves { get; set; }
+        public bool IsOuter { get; set; }
+
         public IgesLoop() {}
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
