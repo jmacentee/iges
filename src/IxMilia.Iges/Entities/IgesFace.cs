@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace IxMilia.Iges.Entities
@@ -75,13 +76,11 @@ namespace IxMilia.Iges.Entities
             // Bind the surface pointer with offset matching
             if (_surfacePointer > 0 && _binder != null)
             {
-                // Try direct pointer first
                 _binder.BindEntity(_surfacePointer, e => {
                     if (e is IgesPlaneSurface || e is IgesPlane)
                         Surface = e;
                 });
                 
-                // If that didn't work, try with offsets
                 if (Surface == null)
                 {
                     for (int offset = 1; offset <= 50; offset++)
