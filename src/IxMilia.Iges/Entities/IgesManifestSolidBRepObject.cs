@@ -18,14 +18,14 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType { get { return IgesEntityType.ManifestSolidBRepObject; } }
 
-        public IgesEntity? Shell { get; set; }
+        public IgesShell? Shell { get; set; } // Use IgesShell for type safety
         public bool IsOriented { get; set; }
         public List<IgesManifestSolidBRepVoid> Voids { get; } = new List<IgesManifestSolidBRepVoid>();
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             var index = 0;
-            binder.BindEntity(Integer(parameters, index++), shell => Shell = shell);
+            binder.BindEntity(Integer(parameters, index++), shell => Shell = shell as IgesShell); // Ensure type
             IsOriented = Boolean(parameters, index++);
             var voidCount = Integer(parameters, index++);
             for (int i = 0; i < voidCount; i++)
@@ -36,7 +36,6 @@ namespace IxMilia.Iges.Entities
                 Voids.Add(vd);
                 binder.BindEntity(pointer, v => vd.Shell = v);
             }
-
             return index;
         }
 
