@@ -9,18 +9,22 @@ namespace IxMilia.Iges.Entities
         // Added for LaserConvert compatibility
         public IgesEntity? Surface { get; set; }
         public List<IgesLoop>? Loops { get; set; }
+        
+        // Store the surface pointer for later binding
+        private int _surfacePointer;
+        private IgesReaderBinder? _binder;
 
         public IgesFace() {}
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             int index = 0;
-            // Surface pointer
-            int surfacePointer = Integer(parameters, index++);
-            if (surfacePointer > 0)
-            {
-                binder.BindEntity(surfacePointer, e => Surface = e);
-            }
+            // Surface pointer - just read it, don't bind yet
+            _surfacePointer = Integer(parameters, index++);
+            _binder = binder;
+            
+            System.Console.WriteLine($"[IGESFACE] ReadParameters: SurfacePointer={_surfacePointer}");
+            
             // Loop count
             int loopCount = Integer(parameters, index++);
             Loops = new List<IgesLoop>();
@@ -33,6 +37,23 @@ namespace IxMilia.Iges.Entities
                 });
             }
             return index;
+        }
+
+        internal override void OnAfterRead(IgesDirectoryData directoryData)
+        {
+            System.Console.WriteLine($"[IGESFACE] OnAfterRead: DirectorySeqNum={directoryData.SequenceNumber}, SurfacePointer={_surfacePointer}, Surface before binding={Surface?.GetType().Name ?? "null"}");
+            
+            // Now bind the surface pointer (after all entities have been registered)
+            if (_surfacePointer > 0 && _binder != null)
+            {
+                _binder.BindEntity(_surfacePointer, e => {
+                    System.Console.WriteLine($"[IGESFACE] OnAfterRead bind callback: Entity type={e?.GetType().Name ?? "null"} for pointer {_surfacePointer}");
+                    Surface = e;
+                });
+            }
+            System.Console.WriteLine($"[IGESFACE] OnAfterRead: Surface after binding={Surface?.GetType().Name ?? "null"}");
+            
+            base.OnAfterRead(directoryData);
         }
 
         internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)

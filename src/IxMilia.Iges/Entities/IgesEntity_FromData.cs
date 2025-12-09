@@ -255,7 +255,6 @@ namespace IxMilia.Iges.Entities
                     entity = IgesGroup.FromParameters(parameters, directoryData, binder);
                     break;
                 case IgesEntityType.Face:
-                    System.Console.WriteLine($"[IGESENTITY] Creating IgesFace for SeqNum={directoryData.SequenceNumber} ParamPtr={directoryData.ParameterPointer}");
                     entity = new IgesFace();
                     break;
                 case IgesEntityType.Loop:

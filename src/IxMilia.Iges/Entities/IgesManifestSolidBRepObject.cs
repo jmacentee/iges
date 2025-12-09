@@ -30,15 +30,6 @@ namespace IxMilia.Iges.Entities
                 if (shell is IgesShell s)
                 {
                     Shell = s;
-                    System.Console.WriteLine($"[IGESMANIFESTSOLID] Bound shell: {s.EntityLabel} SeqNum={shellPointer}");
-                }
-                else if (shell != null)
-                {
-                    System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {shellPointer} resolved to non-shell: {shell.GetType().Name}");
-                }
-                else
-                {
-                    System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {shellPointer} did not resolve to any entity.");
                 }
             });
             IsOriented = Boolean(parameters, index++);
@@ -53,15 +44,6 @@ namespace IxMilia.Iges.Entities
                     if (v is IgesShell s)
                     {
                         vd.Shell = s;
-                        System.Console.WriteLine($"[IGESMANIFESTSOLID] Bound void shell: {s.EntityLabel} SeqNum={pointer}");
-                    }
-                    else if (v != null)
-                    {
-                        System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {pointer} resolved to non-shell: {v.GetType().Name}");
-                    }
-                    else
-                    {
-                        System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {pointer} did not resolve to any entity.");
                     }
                 });
             }
