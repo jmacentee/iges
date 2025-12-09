@@ -73,6 +73,11 @@ namespace IxMilia.Iges.Entities
         Property = 406,
         SingularSubfigureInstance = 408,
         View = 410,
-        Group = 504 // Added for IGES Group/Manifold Solid B-Rep Object
+        Group = 504, // Added for IGES Group/Manifold Solid B-Rep Object
+        Face = 508,   // add
+        Loop = 510,   // add
+        Shell = 514   // add
+
+
     }
 }
