@@ -212,28 +212,35 @@ namespace IxMilia.Iges
         private static void PopulateEntities(IgesFile file, List<IgesDirectoryData> directoryEntries, Dictionary<int, Tuple<List<string>, string?>> parameterMap)
         {
             var binder = new IgesReaderBinder();
+            Console.WriteLine("[IGES] Populating entities...");
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
                 var parameter = parameterMap[dir.ParameterPointer];
                 var parameterValues = parameter.Item1;
                 var comment = parameter.Item2;
+                Console.WriteLine($"[IGES] DirectoryEntry {i}: SeqNum={dir.SequenceNumber} Type={dir.EntityType} Form={dir.FormNumber} ParamPtr={dir.ParameterPointer}");
                 var entity = IgesEntity.FromData(dir, parameterValues, binder);
                 if (entity != null)
                 {
+                    Console.WriteLine($"[IGES] Created entity: SeqNum={dir.SequenceNumber} Type={entity.EntityType} Label={dir.EntityLabel} -> {entity.GetType().Name}");
                     entity.Comment = comment;
-                    var directoryIndex = (i * 2) + 1;
+                    binder.EntityMap[dir.SequenceNumber] = entity; // <-- Always register the entity
                     entity.BindPointers(dir, binder);
                     entity.OnAfterRead(dir);
                     var postProcessed = entity.PostProcess();
                     if (postProcessed is not null)
                     {
-                        binder.EntityMap[directoryIndex] = postProcessed;
+                        Console.WriteLine($"[IGES] PostProcessed entity: SeqNum={dir.SequenceNumber} Type={postProcessed.EntityType} Label={postProcessed.EntityLabel} -> {postProcessed.GetType().Name}");
+                        binder.EntityMap[dir.SequenceNumber] = postProcessed;
                         file.Entities.Add(postProcessed);
                     }
                 }
+                else
+                {
+                    Console.WriteLine($"[IGES] Entity creation failed for SeqNum={dir.SequenceNumber} Type={dir.EntityType}");
+                }
             }
-
             binder.BindRemainingEntities();
         }
 

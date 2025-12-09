@@ -4,10 +4,10 @@ namespace IxMilia.Iges.Entities
 {
     public class IgesManifestSolidBRepVoid
     {
-        public IgesEntity? Shell { get; set; }
+        public IgesShell? Shell { get; set; }
         public bool IsOriented { get; set; }
 
-        public IgesManifestSolidBRepVoid(IgesEntity? shell, bool isOriented)
+        public IgesManifestSolidBRepVoid(IgesShell? shell, bool isOriented)
         {
             Shell = shell;
             IsOriented = isOriented;
@@ -25,7 +25,22 @@ namespace IxMilia.Iges.Entities
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             var index = 0;
-            binder.BindEntity(Integer(parameters, index++), shell => Shell = shell as IgesShell); // Ensure type
+            int shellPointer = Integer(parameters, index++); // IGES pointers are directory sequence numbers (1-based)
+            binder.BindEntity(shellPointer, shell => {
+                if (shell is IgesShell s)
+                {
+                    Shell = s;
+                    System.Console.WriteLine($"[IGESMANIFESTSOLID] Bound shell: {s.EntityLabel} SeqNum={shellPointer}");
+                }
+                else if (shell != null)
+                {
+                    System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {shellPointer} resolved to non-shell: {shell.GetType().Name}");
+                }
+                else
+                {
+                    System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {shellPointer} did not resolve to any entity.");
+                }
+            });
             IsOriented = Boolean(parameters, index++);
             var voidCount = Integer(parameters, index++);
             for (int i = 0; i < voidCount; i++)
@@ -34,7 +49,21 @@ namespace IxMilia.Iges.Entities
                 var orientation = Boolean(parameters, index++);
                 var vd = new IgesManifestSolidBRepVoid(null, orientation);
                 Voids.Add(vd);
-                binder.BindEntity(pointer, v => vd.Shell = v);
+                binder.BindEntity(pointer, v => {
+                    if (v is IgesShell s)
+                    {
+                        vd.Shell = s;
+                        System.Console.WriteLine($"[IGESMANIFESTSOLID] Bound void shell: {s.EntityLabel} SeqNum={pointer}");
+                    }
+                    else if (v != null)
+                    {
+                        System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {pointer} resolved to non-shell: {v.GetType().Name}");
+                    }
+                    else
+                    {
+                        System.Console.WriteLine($"[IGESMANIFESTSOLID] Pointer {pointer} did not resolve to any entity.");
+                    }
+                });
             }
             return index;
         }
@@ -61,3 +90,8 @@ namespace IxMilia.Iges.Entities
         }
     }
 }
+
+
+
+
+
