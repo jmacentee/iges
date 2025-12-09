@@ -72,10 +72,31 @@ namespace IxMilia.Iges.Entities
 
         internal override void OnAfterRead(IgesDirectoryData directoryData)
         {
-            // Bind the surface pointer
+            // Bind the surface pointer with offset matching
             if (_surfacePointer > 0 && _binder != null)
             {
-                _binder.BindEntity(_surfacePointer, e => Surface = e);
+                // Try direct pointer first
+                _binder.BindEntity(_surfacePointer, e => {
+                    if (e is IgesPlaneSurface || e is IgesPlane)
+                        Surface = e;
+                });
+                
+                // If that didn't work, try with offsets
+                if (Surface == null)
+                {
+                    for (int offset = 1; offset <= 50; offset++)
+                    {
+                        int adjustedPtr = _surfacePointer - offset;
+                        if (adjustedPtr > 0)
+                        {
+                            _binder.BindEntity(adjustedPtr, e => {
+                                if (Surface == null && (e is IgesPlaneSurface || e is IgesPlane))
+                                    Surface = e;
+                            });
+                        }
+                        if (Surface != null) break;
+                    }
+                }
             }
             
             // Bind edge pointers with intelligent offset matching
@@ -83,10 +104,9 @@ namespace IxMilia.Iges.Entities
             {
                 if (edgePtr > 0 && _binder != null)
                 {
-                    // Try to find this edge with smart offset logic
                     bool found = false;
                     
-                    // First try: direct pointer (standard IGES)
+                    // First try: direct pointer
                     _binder.BindEntity(edgePtr, e => {
                         if (!found && (e is IgesLine || e is IgesCircularArc || e is IgesRationalBSplineCurve || e is IgesCompositeCurve))
                         {
