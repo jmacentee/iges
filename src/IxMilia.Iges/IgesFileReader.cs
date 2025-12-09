@@ -212,9 +212,9 @@ namespace IxMilia.Iges
         private static void PopulateEntities(IgesFile file, List<IgesDirectoryData> directoryEntries, Dictionary<int, Tuple<List<string>, string?>> parameterMap)
         {
             var binder = new IgesReaderBinder();
-            var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir)>();
-            
-            // First pass: create all entities and register them
+            var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir, int directoryIndex)>();
+
+            // First pass: create all entities and register them by directory index (1-based, matching IGES pointers)
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
@@ -225,20 +225,23 @@ namespace IxMilia.Iges
                 if (entity != null)
                 {
                     entity.Comment = comment;
-                    binder.EntityMap[dir.SequenceNumber] = entity;
-                    entitiesToProcess.Add((entity, dir));
+                    // Use 1-based directory index as the key (matching IGES file pointers)
+                    int pointerKey = i + 1;
+                    binder.EntityMap[pointerKey] = entity;
+                    entitiesToProcess.Add((entity, dir, i));
                 }
             }
-            
+
             // Second pass: bind pointers and post-process (now all entities are registered)
-            foreach (var (entity, dir) in entitiesToProcess)
+            foreach (var (entity, dir, directoryIndex) in entitiesToProcess)
             {
                 entity.BindPointers(dir, binder);
                 entity.OnAfterRead(dir);
                 var postProcessed = entity.PostProcess();
+                int pointerKey = directoryIndex + 1;
                 if (postProcessed is not null)
                 {
-                    binder.EntityMap[dir.SequenceNumber] = postProcessed;
+                    binder.EntityMap[pointerKey] = postProcessed;
                     file.Entities.Add(postProcessed);
                 }
                 else
@@ -246,7 +249,8 @@ namespace IxMilia.Iges
                     file.Entities.Add(entity);
                 }
             }
-            
+
+            // Third pass: flush all remaining entity bindings
             binder.BindRemainingEntities();
         }
 

@@ -10,8 +10,9 @@ namespace IxMilia.Iges.Entities
         public IgesEntity? Surface { get; set; }
         public List<IgesLoop>? Loops { get; set; }
         
-        // Store the surface pointer for later binding
+        // Store the surface pointer and loop pointers for later binding
         private int _surfacePointer;
+        private List<int> _loopPointers = new List<int>();
         private IgesReaderBinder? _binder;
 
         public IgesFace() {}
@@ -19,39 +20,44 @@ namespace IxMilia.Iges.Entities
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             int index = 0;
-            // Surface pointer - just read it, don't bind yet
+            // Surface pointer
             _surfacePointer = Integer(parameters, index++);
             _binder = binder;
-            
-            System.Console.WriteLine($"[IGESFACE] ReadParameters: SurfacePointer={_surfacePointer}");
             
             // Loop count
             int loopCount = Integer(parameters, index++);
             Loops = new List<IgesLoop>();
+            _loopPointers.Clear();
+            
+            // If loopCount > 0, the next loopCount parameters are loop pointers
             for (int i = 0; i < loopCount; i++)
             {
                 int loopPointer = Integer(parameters, index++);
-                binder.BindEntity(loopPointer, e => {
-                    if (e is IgesLoop loop)
-                        Loops.Add(loop);
-                });
+                _loopPointers.Add(loopPointer);
             }
+            
             return index;
         }
 
         internal override void OnAfterRead(IgesDirectoryData directoryData)
         {
-            System.Console.WriteLine($"[IGESFACE] OnAfterRead: DirectorySeqNum={directoryData.SequenceNumber}, SurfacePointer={_surfacePointer}, Surface before binding={Surface?.GetType().Name ?? "null"}");
-            
             // Now bind the surface pointer (after all entities have been registered)
             if (_surfacePointer > 0 && _binder != null)
             {
-                _binder.BindEntity(_surfacePointer, e => {
-                    System.Console.WriteLine($"[IGESFACE] OnAfterRead bind callback: Entity type={e?.GetType().Name ?? "null"} for pointer {_surfacePointer}");
-                    Surface = e;
-                });
+                _binder.BindEntity(_surfacePointer, e => Surface = e);
             }
-            System.Console.WriteLine($"[IGESFACE] OnAfterRead: Surface after binding={Surface?.GetType().Name ?? "null"}");
+            
+            // Bind loop pointers if we have any
+            foreach (var loopPointer in _loopPointers)
+            {
+                if (loopPointer > 0 && _binder != null)
+                {
+                    _binder.BindEntity(loopPointer, e => {
+                        if (e is IgesLoop loop)
+                            Loops.Add(loop);
+                    });
+                }
+            }
             
             base.OnAfterRead(directoryData);
         }

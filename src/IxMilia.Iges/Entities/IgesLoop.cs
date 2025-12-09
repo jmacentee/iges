@@ -9,25 +9,65 @@ namespace IxMilia.Iges.Entities
         // Added for LaserConvert compatibility
         public List<IgesEntity>? Curves { get; set; }
         public bool IsOuter { get; set; }
+        
+        // Store curve pointers for later binding
+        private List<int> _curvePointers = new List<int>();
+        private IgesReaderBinder? _binder;
 
         public IgesLoop() {}
 
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             int index = 0;
-            int curveCount = Integer(parameters, index++);
+            
+            int firstParam = Integer(parameters, index++);
+            
             Curves = new List<IgesEntity>();
-            for (int i = 0; i < curveCount; i++)
+            _curvePointers.Clear();
+            _binder = binder;
+            
+            // Parse pairs of (pointer, orientation)
+            while (index < parameters.Count)
             {
-                int curvePointer = Integer(parameters, index++);
-                binder.BindEntity(curvePointer, e => {
-                    if (e != null)
-                        Curves.Add(e);
-                });
+                int pointer = Integer(parameters, index++);
+                
+                if (index == parameters.Count)
+                {
+                    IsOuter = (pointer == 1);
+                    break;
+                }
+                
+                if (pointer > 0)
+                {
+                    int orientation = Integer(parameters, index++);
+                    _curvePointers.Add(pointer);
+                }
+                else
+                {
+                    int _ = Integer(parameters, index++);
+                }
             }
-            // Read IsOuter flag (0 = inner, 1 = outer)
-            IsOuter = Integer(parameters, index++) == 1;
-            return index;
+            
+            return parameters.Count;
+        }
+
+        internal override void OnAfterRead(IgesDirectoryData directoryData)
+        {
+            // Bind all curve/edge pointers
+            foreach (var curvePointer in _curvePointers)
+            {
+                if (curvePointer > 0 && _binder != null)
+                {
+                    _binder.BindEntity(curvePointer, e => {
+                        if (e != null)
+                        {
+                            Curves.Add(e);
+                        }
+                    });
+                }
+            }
+            
+            base.OnAfterRead(directoryData);
         }
 
         internal override void WriteParameters(List<object?> parameters, IgesWriterBinder binder)
