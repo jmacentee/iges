@@ -226,6 +226,7 @@ namespace IxMilia.Iges
                 if (entity != null)
                 {
                     entity.Comment = comment;
+                    entity.DirectoryEntryIndex = i; // Track the 0-based directory index
                     binder.EntityMap[i] = entity;
                     binder.EntityMap[i + 1] = entity;
                     entitiesToProcess.Add((entity, dir, i));
@@ -240,6 +241,7 @@ namespace IxMilia.Iges
                 var postProcessed = entity.PostProcess();
                 if (postProcessed is not null)
                 {
+                    postProcessed.DirectoryEntryIndex = directoryIndex; // Preserve index on post-processed entity
                     binder.EntityMap[directoryIndex] = postProcessed;
                     binder.EntityMap[directoryIndex + 1] = postProcessed;
                     file.Entities.Add(postProcessed);

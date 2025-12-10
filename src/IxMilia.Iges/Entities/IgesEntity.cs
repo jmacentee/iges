@@ -24,6 +24,14 @@ namespace IxMilia.Iges.Entities
 
         private int _lineCount;
         public int FormNumber { get; protected set; }
+        
+        /// <summary>
+        /// The 0-based directory entry index this entity was loaded from.
+        /// This is used to match IGES directory entry pointers to loaded entities.
+        /// For example, IGES pointers 1-based (1, 3, 5...) map to 0-based indices (0, 1, 2...).
+        /// </summary>
+        public int DirectoryEntryIndex { get; internal set; } = -1;
+        
         public IgesEntity? StructureEntity { get; set; }
         public IgesViewBase? View { get; set; }
         public IgesTransformationMatrix? TransformationMatrix { get; set; }
