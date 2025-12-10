@@ -30,24 +30,6 @@ namespace IxMilia.Iges.Entities
                 
                 FacePointers.Add(facePointer);
                 FaceOrientations.Add(orientation);
-                
-                // Try multiple offsets to find the face
-                // Empirically: Plasticity uses different pointer schemes for different faces
-                int[] offsetsToTry = (i < 3) ? new int[] { 21, 27 } : new int[] { 27, 21, 51, 75 };
-                
-                foreach (int offset in offsetsToTry)
-                {
-                    int adjustedPointer = facePointer - offset;
-                    binder.BindEntity(adjustedPointer, e => {
-                        if (e is IgesFace face)
-                        {
-                            if (!Faces.Contains(face))
-                            {
-                                Faces.Add(face);
-                            }
-                        }
-                    });
-                }
             }
             
             return index;
