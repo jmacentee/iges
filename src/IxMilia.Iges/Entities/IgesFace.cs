@@ -15,7 +15,7 @@ namespace IxMilia.Iges.Entities
         
         // Store the surface pointer and loop pointers for later binding
         private int _surfacePointer;
-        private List<int> _loopPointers = new List<int>();
+        public List<int> _loopPointers = new List<int>();  // Made public for IgesHelper access
         private IgesReaderBinder? _binder;
 
         public IgesFace() {}
