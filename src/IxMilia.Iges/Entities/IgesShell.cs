@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace IxMilia.Iges.Entities
@@ -9,9 +10,9 @@ namespace IxMilia.Iges.Entities
         // Added for LaserConvert compatibility
         public List<IgesFace>? Faces { get; set; }
         
-        // Store raw pointers for debugging/workaround
-        public List<int>? FacePointers { get; set; }
-        public List<int>? FaceOrientations { get; set; }
+        // Store raw pointers for manual binding after all entities are loaded
+        public List<int>? FacePointers { get; private set; }
+        public List<int>? FaceOrientations { get; private set; }
 
         public IgesShell() { }
 
@@ -19,7 +20,6 @@ namespace IxMilia.Iges.Entities
         {
             int index = 0;
             int faceCount = Integer(parameters, index++);
-            Faces = new List<IgesFace>();
             FacePointers = new List<int>();
             FaceOrientations = new List<int>();
             

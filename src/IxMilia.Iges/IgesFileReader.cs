@@ -215,7 +215,6 @@ namespace IxMilia.Iges
             var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir, int directoryIndex)>();
             
             // First pass: create all entities and register them
-            // Register by BOTH 0-based and 1-based indices to handle various pointer schemes
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
@@ -226,9 +225,11 @@ namespace IxMilia.Iges
                 if (entity != null)
                 {
                     entity.Comment = comment;
-                    entity.DirectoryEntryIndex = i; // Track the 0-based directory index
-                    binder.EntityMap[i] = entity;
-                    binder.EntityMap[i + 1] = entity;
+                    entity.DirectoryEntryIndex = i;  // Track which directory entry this came from (0-based)
+                    
+                    // Register by 1-based IGES entity pointer (directory entry index + 1)
+                    int entityPointer = i + 1;
+                    binder.EntityMap[entityPointer] = entity;
                     entitiesToProcess.Add((entity, dir, i));
                 }
             }
@@ -241,9 +242,9 @@ namespace IxMilia.Iges
                 var postProcessed = entity.PostProcess();
                 if (postProcessed is not null)
                 {
-                    postProcessed.DirectoryEntryIndex = directoryIndex; // Preserve index on post-processed entity
-                    binder.EntityMap[directoryIndex] = postProcessed;
-                    binder.EntityMap[directoryIndex + 1] = postProcessed;
+                    postProcessed.DirectoryEntryIndex = directoryIndex;  // Preserve index
+                    int entityPointer = directoryIndex + 1;
+                    binder.EntityMap[entityPointer] = postProcessed;
                     file.Entities.Add(postProcessed);
                 }
                 else

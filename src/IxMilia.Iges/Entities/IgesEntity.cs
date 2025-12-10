@@ -26,9 +26,8 @@ namespace IxMilia.Iges.Entities
         public int FormNumber { get; protected set; }
         
         /// <summary>
-        /// The 0-based directory entry index this entity was loaded from.
-        /// This is used to match IGES directory entry pointers to loaded entities.
-        /// For example, IGES pointers 1-based (1, 3, 5...) map to 0-based indices (0, 1, 2...).
+        /// The directory entry index (0-based) for this entity in the IGES file.
+        /// Used to map IGES entity pointers to loaded entities.
         /// </summary>
         public int DirectoryEntryIndex { get; internal set; } = -1;
         
