@@ -23,24 +23,26 @@ namespace IxMilia.Iges.Entities
         internal override int ReadParameters(List<string> parameters, IgesReaderBinder binder)
         {
             int index = 0;
-            // Surface pointer
+            // Surface pointer (parameter 1)
             _surfacePointer = Integer(parameters, index++);
             _binder = binder;
             
-            // Next parameter: loop count (standard IGES)
+            // Loop count (parameter 2)
             int loopCount = Integer(parameters, index++);
+            
+            // Read loop pointers FIRST (parameters 3 to 2+loopCount)
+            // These come immediately after the loop count in the IGES spec
             Loops = new List<IgesLoop>();
             _loopPointers.Clear();
-            EdgePointers.Clear();
-            
-            // Skip any flag/padding
-            if (index < parameters.Count && Integer(parameters, index) == 0)
+            for (int i = 0; i < loopCount && index < parameters.Count; i++)
             {
-                index++;
+                int loopPointer = Integer(parameters, index++);
+                _loopPointers.Add(loopPointer);
             }
             
-            // Extract edge pointers from the remaining parameters
+            // NOW look for edge pointers in remaining parameters
             // Plasticity pattern: edge_ptr, orientation, 0, 0, 0, edge_ptr, orientation, 0, 0, 0, ...
+            EdgePointers.Clear();
             while (index + 4 < parameters.Count)
             {
                 int p1 = Integer(parameters, index);
@@ -59,13 +61,6 @@ namespace IxMilia.Iges.Entities
                 {
                     index++;
                 }
-            }
-            
-            // Store loop pointers for standard IGES binding
-            for (int i = 0; i < loopCount && index < parameters.Count; i++)
-            {
-                int loopPointer = Integer(parameters, index++);
-                _loopPointers.Add(loopPointer);
             }
             
             return parameters.Count;
