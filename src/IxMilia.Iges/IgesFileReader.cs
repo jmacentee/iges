@@ -212,9 +212,9 @@ namespace IxMilia.Iges
         private static void PopulateEntities(IgesFile file, List<IgesDirectoryData> directoryEntries, Dictionary<int, Tuple<List<string>, string?>> parameterMap)
         {
             var binder = new IgesReaderBinder();
-            var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir, int directoryIndex)>();
-            
-            // First pass: create all entities and register them
+            var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir)>();
+
+            // First pass: create all entities
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
@@ -225,26 +225,20 @@ namespace IxMilia.Iges
                 if (entity != null)
                 {
                     entity.Comment = comment;
-                    entity.DirectoryEntryIndex = i;  // Track which directory entry this came from (0-based)
-                    
-                    // Register by 1-based IGES entity pointer (directory entry index + 1)
-                    int entityPointer = i + 1;
-                    binder.EntityMap[entityPointer] = entity;
-                    entitiesToProcess.Add((entity, dir, i));
+                    entity.DirectoryEntryIndex = i;
+                    entitiesToProcess.Add((entity, dir));
                 }
             }
-            
+
             // Second pass: bind pointers and post-process
-            foreach (var (entity, dir, directoryIndex) in entitiesToProcess)
+            foreach (var (entity, dir) in entitiesToProcess)
             {
                 entity.BindPointers(dir, binder);
                 entity.OnAfterRead(dir);
                 var postProcessed = entity.PostProcess();
                 if (postProcessed is not null)
                 {
-                    postProcessed.DirectoryEntryIndex = directoryIndex;  // Preserve index
-                    int entityPointer = directoryIndex + 1;
-                    binder.EntityMap[entityPointer] = postProcessed;
+                    postProcessed.DirectoryEntryIndex = entity.DirectoryEntryIndex;
                     file.Entities.Add(postProcessed);
                 }
                 else
@@ -252,7 +246,7 @@ namespace IxMilia.Iges
                     file.Entities.Add(entity);
                 }
             }
-            
+
             // Third pass: flush all remaining entity bindings
             binder.BindRemainingEntities();
         }

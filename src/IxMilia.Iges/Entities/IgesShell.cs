@@ -7,12 +7,8 @@ namespace IxMilia.Iges.Entities
     {
         public override IgesEntityType EntityType => IgesEntityType.Shell;
 
-        // Added for LaserConvert compatibility
+        // Post-binding: populated faces from binder resolution
         public List<IgesFace>? Faces { get; set; }
-        
-        // Store raw pointers for manual binding after all entities are loaded
-        public List<int>? FacePointers { get; private set; }
-        public List<int>? FaceOrientations { get; private set; }
 
         public IgesShell() { }
 
@@ -20,16 +16,23 @@ namespace IxMilia.Iges.Entities
         {
             int index = 0;
             int faceCount = Integer(parameters, index++);
-            FacePointers = new List<int>();
-            FaceOrientations = new List<int>();
             
+            Faces = new List<IgesFace>();
+
             for (int i = 0; i < faceCount; i++)
             {
                 int facePointer = Integer(parameters, index++);
                 int orientation = Integer(parameters, index++);
                 
-                FacePointers.Add(facePointer);
-                FaceOrientations.Add(orientation);
+                // Use the binder to defer face resolution until all entities are loaded
+                // This is the standard IxMilia pattern for entity pointer resolution
+                binder.BindEntity(facePointer, (face) =>
+                {
+                    if (face is IgesFace igsFace)
+                    {
+                        Faces.Add(igsFace);
+                    }
+                });
             }
             
             return index;
