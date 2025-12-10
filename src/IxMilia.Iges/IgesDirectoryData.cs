@@ -23,6 +23,9 @@ namespace IxMilia.Iges
         public int FormNumber { get; set; }
         public string? EntityLabel { get; set; }
         public uint EntitySubscript { get; set; }
+        
+        // Directory entry line number from the file (1-based, odd numbers)
+        public int DirectoryLineNumber { get; set; }
 
         private const string BlankField = "        ";
 

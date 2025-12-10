@@ -40,6 +40,9 @@ namespace IxMilia.Iges
 
         public List<IgesEntity> Entities { get; private set; }
 
+        // Map from directory entry line number (1-based, odd numbers) to entity
+        public Dictionary<int, IgesEntity> EntityLineNumberMap { get; private set; }
+
         public const char DefaultFieldDelimiter = ',';
 
         public const char DefaultRecordDelimiter = ';';
@@ -64,6 +67,15 @@ namespace IxMilia.Iges
             DraftingStandard = IgesDraftingStandard.None;
 
             Entities = new List<IgesEntity>();
+            EntityLineNumberMap = new Dictionary<int, IgesEntity>();
+        }
+
+        internal void SetEntityLineNumberMap(List<(IgesEntity entity, IgesDirectoryData dir, int directoryLineNumber)> entitiesToProcess)
+        {
+            foreach (var (entity, _, lineNum) in entitiesToProcess)
+            {
+                EntityLineNumberMap[lineNum] = entity;
+            }
         }
 
         public void Save(string path)

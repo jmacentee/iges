@@ -18,13 +18,13 @@ namespace IxMilia.Iges
             string? terminateLine = null;
             var startLines = new List<string>();
             var globalLines = new List<string>();
-            var directoryLines = new List<string>();
+            var directoryLines = new List<(string data, int fileLineNumber)>();  // Track file line numbers
             var parameterLines = new List<string>();
             var sectionLines = new Dictionary<IgesSectionType, List<string>>()
                 {
                     { IgesSectionType.Start, startLines },
                     { IgesSectionType.Global, globalLines },
-                    { IgesSectionType.Directory, directoryLines },
+                    { IgesSectionType.Directory, new List<string>() },  // Dummy, we'll handle separately
                     { IgesSectionType.Parameter, parameterLines }
                 };
 
@@ -61,9 +61,18 @@ namespace IxMilia.Iges
                 {
                     if (sectionType == IgesSectionType.Parameter)
                         data = data.Substring(0, data.Length - 8); // parameter data doesn't need its last 8 bytes
-                    sectionLines[sectionType].Add(data);
-                    if (sectionLines[sectionType].Count != lineNumber)
-                        throw new IgesException("Unordered line number");
+                    
+                    if (sectionType == IgesSectionType.Directory)
+                    {
+                        // For directory section, track both data and actual file line number
+                        directoryLines.Add((data, lineNumber));
+                    }
+                    else
+                    {
+                        sectionLines[sectionType].Add(data);
+                        if (sectionLines[sectionType].Count != lineNumber)
+                            throw new IgesException("Unordered line number");
+                    }
                 }
             }
 
@@ -85,12 +94,14 @@ namespace IxMilia.Iges
             ParsingComment
         }
 
-        private static List<IgesDirectoryData> ParseDirectoryLines(List<string> directoryLines)
+        private static List<IgesDirectoryData> ParseDirectoryLines(List<(string data, int fileLineNumber)> directoryLines)
         {
             var directoryEntires = new List<IgesDirectoryData>();
             for (int i = 0; i < directoryLines.Count; i += 2)
             {
-                var dir = IgesDirectoryData.FromRawLines(directoryLines[i], directoryLines[i + 1]);
+                var dir = IgesDirectoryData.FromRawLines(directoryLines[i].data, directoryLines[i + 1].data);
+                // Directory entries span 2 lines, use the line number of the first line
+                dir.DirectoryLineNumber = directoryLines[i].fileLineNumber;
                 directoryEntires.Add(dir);
             }
 
@@ -212,9 +223,9 @@ namespace IxMilia.Iges
         private static void PopulateEntities(IgesFile file, List<IgesDirectoryData> directoryEntries, Dictionary<int, Tuple<List<string>, string?>> parameterMap)
         {
             var binder = new IgesReaderBinder();
-            var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir)>();
-
-            // First pass: create all entities
+            var entitiesToProcess = new List<(IgesEntity entity, IgesDirectoryData dir, int directoryLineNumber)>();
+            
+            // First pass: create all entities and track directory line numbers from the file
             for (int i = 0; i < directoryEntries.Count; i++)
             {
                 var dir = directoryEntries[i];
@@ -226,12 +237,13 @@ namespace IxMilia.Iges
                 {
                     entity.Comment = comment;
                     entity.DirectoryEntryIndex = i;
-                    entitiesToProcess.Add((entity, dir));
+                    // Use the actual directory line number from the IGES file (D section line numbers)
+                    entitiesToProcess.Add((entity, dir, dir.DirectoryLineNumber));
                 }
             }
-
+            
             // Second pass: bind pointers and post-process
-            foreach (var (entity, dir) in entitiesToProcess)
+            foreach (var (entity, dir, _) in entitiesToProcess)
             {
                 entity.BindPointers(dir, binder);
                 entity.OnAfterRead(dir);
@@ -246,7 +258,10 @@ namespace IxMilia.Iges
                     file.Entities.Add(entity);
                 }
             }
-
+            
+            // Store line number mapping for Shell pointer resolution
+            file.SetEntityLineNumberMap(entitiesToProcess);
+            
             // Third pass: flush all remaining entity bindings
             binder.BindRemainingEntities();
         }
