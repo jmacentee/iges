@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 
 namespace IxMilia.Iges.Entities
 {
@@ -7,6 +8,7 @@ namespace IxMilia.Iges.Entities
         public override IgesEntityType EntityType => IgesEntityType.Loop;
 
         public List<IgesEntity>? Curves { get; set; }
+        public List<int> CurvePointers { get; set; } = new List<int>();  // Store pointers for later resolution
         public bool IsOuter { get; set; }
 
         public IgesLoop() {}
@@ -15,18 +17,26 @@ namespace IxMilia.Iges.Entities
         {
             int index = 0;
             
-            // Plasticity format: surface_ptr, curve_count, curve_ptr(s), ...
-            int surfacePtr = Integer(parameters, index++);
-            int curveCount = Integer(parameters, index++);
+            // IGES Loop type 510 format
+            // Parameters: edge_count, (edge_ptr, orientation, ...)*
+            // Note: Plasticity exports have a non-standard format, so we'll just try to read what's there
+            
+            int edgeCount = Integer(parameters, index++);
             
             Curves = new List<IgesEntity>();
+            CurvePointers.Clear();
             
-            // Read the specified number of curve pointers
-            for (int i = 0; i < curveCount && index < parameters.Count; i++)
+            // Read edge/curve pointers with orientation flags
+            for (int i = 0; i < edgeCount && index < parameters.Count; i++)
             {
                 int curvePointer = Integer(parameters, index++);
+                int orientation = (index < parameters.Count) ? Integer(parameters, index++) : 0;
+                
+                CurvePointers.Add(curvePointer);
+                
+                // Deferred binding
                 binder.BindEntity(curvePointer, e => {
-                    if (e != null)
+                    if (e != null && !Curves.Contains(e))
                         Curves.Add(e);
                 });
             }
